@@ -71,7 +71,6 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public TextView property_bath_no_tv;
         public TextView property_sqft_no_tv;
 
-        private ImageView imageToUpload;
         public MyViewHolder(View itemView){
             super(itemView);
             property_iv = (ImageView)itemView.findViewById(R.id.property_iv);

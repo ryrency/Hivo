@@ -7,44 +7,54 @@
     tools:context=".ui.MainActivity">
 
     <EditText
-        android:id="@+id/list_location_et"
-        android:layout_width="279dp"
-        android:layout_height="47dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:hint="Location"
-        app:layout_constraintBottom_toTopOf="@+id/list_property_rv"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/enter_location"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="4dp"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintHorizontal_bias="0"
+        android:hint="Map Location"
+        android:background="@null"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/user_icon"
+        android:singleLine="true"
+
+        />
 
     <ImageView
-        android:id="@+id/list_user_iv"
-        android:layout_width="63dp"
+        android:id="@+id/user_icon"
+        android:layout_width="60dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:clickable="true"
+        android:layout_marginRight="2dp"
         android:src="@drawable/user"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/user_icon"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_property_rv"
         class="android.support.v7.app.AlertController$RecycleListView"
-        android:layout_width="376dp"
-        android:layout_height="387dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/list_map_iv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list_user_iv"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
         app:layout_constraintVertical_bias="0.0">
 
     </android.support.v7.widget.RecyclerView>
@@ -52,8 +62,8 @@
 
     <ImageView
         android:id="@+id/list_map_iv"
-        android:layout_width="45dp"
-        android:layout_height="48dp"
+        android:layout_width="42dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="4dp"
@@ -67,24 +77,20 @@
 
     <TextView
         android:id="@+id/list_map_tv"
-        android:layout_width="32dp"
-        android:layout_height="23dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="68dp"
-        android:layout_marginRight="68dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
         android:gravity="center"
         android:text="Map"
+        android:textSize="16dp"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/list_sort_iv"
-        app:layout_constraintTop_toBottomOf="@+id/list_property_rv"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="@id/list_map_iv"
+        app:layout_constraintLeft_toRightOf="@+id/list_map_iv"/>
 
     <ImageView
         android:id="@+id/list_sort_iv"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
+        android:layout_width="45dp"
+        android:layout_height="48dp"
         android:src="@drawable/sort"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/list_sort_tv" />
@@ -93,23 +99,22 @@
         android:id="@+id/list_sort_tv"
         android:layout_width="36dp"
         android:layout_height="37dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="64dp"
+        android:layout_marginTop="4dp"
         android:layout_marginRight="64dp"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="Sort"
+        android:textSize="16dp"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/list_filter_iv"
-        app:layout_constraintTop_toBottomOf="@+id/list_property_rv"
+        app:layout_constraintTop_toTopOf="@+id/list_sort_iv"
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/list_filter_iv"
         android:layout_width="36dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
@@ -123,20 +128,14 @@
         android:id="@+id/list_filter_tv"
         android:layout_width="38dp"
         android:layout_height="23dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:gravity="center"
         android:text="Filter"
+        android:textSize="16dp"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.384"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toBottomOf="@+id/list_property_rv"
+        app:layout_constraintTop_toTopOf="@id/list_filter_iv"
         app:layout_constraintVertical_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>
