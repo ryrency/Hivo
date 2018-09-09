@@ -14,6 +14,8 @@ import edu.sjsu.hivo.model.PropertyList;
 
 public class MainActivity extends AppCompatActivity {
 
+    String TAG = MainActivity.class.getSimpleName();
+
     private RecyclerView recyclerView;
     private PropertyListAdapter adapter;
 
