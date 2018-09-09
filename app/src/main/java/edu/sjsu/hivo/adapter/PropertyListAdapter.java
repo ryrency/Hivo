@@ -1,6 +1,7 @@
 package edu.sjsu.hivo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,10 @@ import java.util.ArrayList;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.model.PropertyList;
+import edu.sjsu.hivo.ui.MainActivity;
+import edu.sjsu.hivo.ui.PropertyDetail;
+
+import static android.support.v4.content.ContextCompat.startActivity;
 
 public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -47,13 +52,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MyViewHolder vh1 = (MyViewHolder)holder;
         PropertyList list = (PropertyList)propertyList.get(position);
-        ((MyViewHolder) holder).property_iv.setBackgroundResource(R.drawable.house1);
-        ((MyViewHolder) holder).property_price_tv.setText(list.getProperty_price_tv());
-        ((MyViewHolder) holder).property_address_line1_tv.setText(list.getProperty_address_line1_tv());
-        ((MyViewHolder) holder).property_address_line2_tv.setText(list.getProperty_address_line2_tv());
-        ((MyViewHolder) holder).property_bed_no_tv.setText(list.getProperty_bed_no_tv());
-        ((MyViewHolder) holder).property_bath_no_tv.setText(list.getProperty_bath_no_tv());
-        ((MyViewHolder) holder).property_sqft_no_tv.setText(list.getProperty_sqft_no_tv());
+        vh1.bindData(list);
     }
 
     @Override
@@ -63,23 +62,51 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        public ImageView property_iv;
-        public TextView property_price_tv;
-        public TextView property_address_line1_tv;
-        public TextView property_address_line2_tv;
-        public TextView property_bed_no_tv;
-        public TextView property_bath_no_tv;
-        public TextView property_sqft_no_tv;
+        private final ImageView propertyIv;
+        private final  TextView propertyPriceTv;
+        public TextView propertyAddressLine1Tv;
+        public TextView propertyAddressLine2Tv;
+        public TextView propertyBedNoTv;
+        public TextView propertyBathNoTv;
+        public TextView propertySqftNoTv;
 
         public MyViewHolder(View itemView){
             super(itemView);
-            property_iv = (ImageView)itemView.findViewById(R.id.property_iv);
-            property_price_tv = (TextView)itemView.findViewById(R.id.property_price_tv);
-            property_address_line1_tv= (TextView)itemView.findViewById(R.id.property_address_line1_tv);
-            property_address_line2_tv = (TextView) itemView.findViewById(R.id.property_address_line2_tv);
-            property_bed_no_tv = (TextView)itemView.findViewById(R.id.property_bed_no_tv);
-            property_bath_no_tv = (TextView)itemView.findViewById(R.id.property_bath_no_tv);
-            property_sqft_no_tv = (TextView)itemView.findViewById(R.id.property_sqft_no_tv);
+            propertyIv = (ImageView)itemView.findViewById(R.id.property_iv);
+            propertyPriceTv = (TextView)itemView.findViewById(R.id.property_price_tv);
+            propertyAddressLine1Tv = (TextView)itemView.findViewById(R.id.property_address_line1_tv);
+            propertyAddressLine2Tv = (TextView) itemView.findViewById(R.id.property_address_line2_tv);
+            propertyBedNoTv = (TextView)itemView.findViewById(R.id.property_bed_no_tv);
+            propertyBathNoTv = (TextView)itemView.findViewById(R.id.property_bath_no_tv);
+            propertySqftNoTv = (TextView)itemView.findViewById(R.id.property_sqft_no_tv);
+        }
+
+        void bindData(final PropertyList list){
+            propertyIv.setBackgroundResource(R.drawable.house1);
+            propertyPriceTv.setText(list.getProperty_price_tv());
+            propertyAddressLine1Tv.setText(list.getProperty_address_line1_tv());
+            propertyAddressLine2Tv.setText(list.getProperty_address_line2_tv());
+            propertyBedNoTv.setText(list.getProperty_bed_no_tv());
+            propertyBathNoTv.setText(list.getProperty_bath_no_tv());
+            propertySqftNoTv.setText(list.getProperty_sqft_no_tv());
+
+            propertyIv.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG,"Intending to call PropertyDEtail");
+//                    Intent detailPage = new Intent(context,PropertyDetail.class);
+//                    detailPage.setClass(context,PropertyDetail.class);
+//                    startActivity(detailPage);
+
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, PropertyDetail.class);
+                    intent.setClass(context,PropertyDetail.class);
+                    context.startActivity(intent);
+
+                }
+            });
+
+
         }
 
 
