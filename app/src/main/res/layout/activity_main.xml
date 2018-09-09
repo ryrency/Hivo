@@ -46,11 +46,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_property_rv"
         class="android.support.v7.app.AlertController$RecycleListView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@id/list_map_iv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

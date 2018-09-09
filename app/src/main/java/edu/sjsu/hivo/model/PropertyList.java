@@ -16,12 +16,12 @@ public class PropertyList{
     public PropertyList(){
         //property_iv =    (int) Resource.Drawable).GetField("drwName").GetValue(null);
 //        R.drawable.house1;
-        property_price_tv = "3,00,000";
+        property_price_tv = "$3,00,000";
         property_address_line1_tv="2781 Mauricia Ave, Unit B";
         property_address_line2_tv = "Santa Clara, CA, 95051";
         property_bed_no_tv = "2";
         property_bath_no_tv = "2";
-        property_sqft_no_tv= "1380";
+        property_sqft_no_tv= "1,380";
     }
 
 //    public int getProperty_iv() {
