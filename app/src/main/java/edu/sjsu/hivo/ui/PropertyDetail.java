@@ -1,13 +1,8 @@
 package edu.sjsu.hivo.ui;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -22,7 +17,7 @@ public class PropertyDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.property_detail);
+        setContentView(R.layout.property_images);
         Log.i(TAG,"intoProperty DEtail");
         ArrayList<Integer> houseImages = new ArrayList<>();
 
