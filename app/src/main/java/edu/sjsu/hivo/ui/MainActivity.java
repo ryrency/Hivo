@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         propertyList.add(new PropertyList());
         propertyList.add(new PropertyList());
         propertyList.add(new PropertyList());
-
         recyclerView = (RecyclerView)findViewById(R.id.list_property_rv);
         adapter = new PropertyListAdapter(propertyList,this);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,
