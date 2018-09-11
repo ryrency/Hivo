@@ -59,7 +59,7 @@ public class PropertyDetailAdapter extends RecyclerView.Adapter<PropertyViewHold
                 view = LayoutInflater
                         .from(parent.getContext())
                         .inflate(R.layout.property_images, parent, false);
-                return new ViewPagerViewHolder(view);
+                return new ViewPagerViewHolder(context, view);
             case TEXT:
                 view = LayoutInflater
                         .from(parent.getContext())

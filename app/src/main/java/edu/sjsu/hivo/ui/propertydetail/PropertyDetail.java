@@ -23,24 +23,24 @@ public class PropertyDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.property_images);
+        setContentView(R.layout.property_details);
         Log.i(TAG,"intoProperty DEtail");
-        ArrayList<Integer> houseImages = new ArrayList<>();
+//        ArrayList<Integer> houseImages = new ArrayList<>();
+//
+//        houseImages.add(R.drawable.house1);
+//        houseImages.add(R.drawable.house2);
+//        houseImages.add(R.drawable.house3);
+//        houseImages.add(R.drawable.house4);
+//        houseImages.add(R.drawable.house5);
+//        houseImages.add(R.drawable.house6);
 
-        houseImages.add(R.drawable.house1);
-        houseImages.add(R.drawable.house2);
-        houseImages.add(R.drawable.house3);
-        houseImages.add(R.drawable.house4);
-        houseImages.add(R.drawable.house5);
-        houseImages.add(R.drawable.house6);
-
-        viewPager = (ViewPager) findViewById(R.id.detail_viewpager);
+//        viewPager = (ViewPager) findViewById(R.id.detail_viewpager);
 //        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabDots);
 //        tabLayout.setupWithViewPager(viewPager, true);
 
-        adapter = new CustomPagerAdapter(this,houseImages);
-
-        viewPager.setAdapter(adapter);
+//        adapter = new CustomPagerAdapter(this,houseImages);
+//
+//        viewPager.setAdapter(adapter);
         Property property = new Property();
         recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);
         propertyDetailAdapter = new PropertyDetailAdapter(this, property);
