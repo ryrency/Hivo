@@ -17,11 +17,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import edu.sjsu.hivo.R;
-import edu.sjsu.hivo.model.PropertyList;
-import edu.sjsu.hivo.ui.MainActivity;
-import edu.sjsu.hivo.ui.PropertyDetail;
-
-import static android.support.v4.content.ContextCompat.startActivity;
+import edu.sjsu.hivo.model.Property;
+import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
 
 public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -51,7 +48,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MyViewHolder vh1 = (MyViewHolder)holder;
-        PropertyList list = (PropertyList)propertyList.get(position);
+        Property list = (Property)propertyList.get(position);
         vh1.bindData(list);
     }
 
@@ -64,11 +61,11 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public class MyViewHolder extends RecyclerView.ViewHolder{
         private final ImageView propertyIv;
         private final  TextView propertyPriceTv;
-        public TextView propertyAddressLine1Tv;
-        public TextView propertyAddressLine2Tv;
-        public TextView propertyBedNoTv;
-        public TextView propertyBathNoTv;
-        public TextView propertySqftNoTv;
+        private TextView propertyAddressLine1Tv;
+        private TextView propertyAddressLine2Tv;
+        private TextView propertyBedNoTv;
+        private TextView propertyBathNoTv;
+        private TextView propertySqftNoTv;
 
         public MyViewHolder(View itemView){
             super(itemView);
@@ -77,11 +74,11 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             propertyAddressLine1Tv = (TextView)itemView.findViewById(R.id.property_address_line1_tv);
             propertyAddressLine2Tv = (TextView) itemView.findViewById(R.id.property_address_line2_tv);
             propertyBedNoTv = (TextView)itemView.findViewById(R.id.property_bed_no_tv);
-            propertyBathNoTv = (TextView)itemView.findViewById(R.id.property_bath_no_tv);
+            propertyBathNoTv = (TextView)itemView.findViewById(R.id.property_baths_no_tv);
             propertySqftNoTv = (TextView)itemView.findViewById(R.id.property_sqft_no_tv);
         }
 
-        void bindData(final PropertyList list){
+        void bindData(final Property list){
             propertyIv.setBackgroundResource(R.drawable.house1);
             propertyPriceTv.setText(list.getProperty_price_tv());
             propertyAddressLine1Tv.setText(list.getProperty_address_line1_tv());

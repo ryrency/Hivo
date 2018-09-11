@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_property_rv"
+        android:id="@+id/property_details_rv"
         class="android.support.v7.app.AlertController$RecycleListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.PropertyListAdapter;
-import edu.sjsu.hivo.model.PropertyList;
+import edu.sjsu.hivo.model.Property;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,12 +25,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ArrayList<Object> propertyList = new ArrayList<>();
-        propertyList.add(new PropertyList());
-        propertyList.add(new PropertyList());
-        propertyList.add(new PropertyList());
-        propertyList.add(new PropertyList());
-        propertyList.add(new PropertyList());
-        recyclerView = (RecyclerView)findViewById(R.id.list_property_rv);
+        propertyList.add(new Property());
+        propertyList.add(new Property());
+        propertyList.add(new Property());
+        propertyList.add(new Property());
+        propertyList.add(new Property());
+        recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);
         adapter = new PropertyListAdapter(propertyList,this);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,
                 false);

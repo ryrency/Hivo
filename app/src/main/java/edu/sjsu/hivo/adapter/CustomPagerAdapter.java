@@ -26,11 +26,7 @@ public class CustomPagerAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        Log.i(TAG,"Instantiating new Item");
-        Log.i(TAG, "Position is"+position);
-
         position=(position)%images.size();
-
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.detail_images,container,false);
         final ImageView detailIv;

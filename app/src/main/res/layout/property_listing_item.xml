@@ -81,7 +81,7 @@
         app:layout_constraintTop_toBottomOf="@+id/property_bed_no_tv"/>
 
     <TextView
-        android:id="@+id/property_bath_no_tv"
+        android:id="@+id/property_baths_no_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="3"
@@ -103,7 +103,7 @@
         android:textStyle="bold"
         android:layout_marginRight="62dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/property_bath_no_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/property_baths_no_tv" />
 
     <TextView
         android:id="@+id/property_sqft_no_tv"

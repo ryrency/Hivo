@@ -37,7 +37,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.PropertyDetail"
+        <activity android:name=".ui.propertydetail.PropertyDetail"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
