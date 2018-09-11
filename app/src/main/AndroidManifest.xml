@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.sjsu.hivo">
 
+<!--<<<<<<< Updated upstream-->
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
@@ -45,7 +46,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
 
-            android:value="@integer/google_play_services_version" />
+            />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

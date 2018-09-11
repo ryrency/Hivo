@@ -11,14 +11,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.sjsu.hivo.R;
+//<<<<<<< Updated upstream
 import edu.sjsu.hivo.model.Property;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
+//=======
+import edu.sjsu.hivo.model.ListPropertyResponse;
+//import edu.sjsu.hivo.model.PropertyList;
+//import edu.sjsu.hivo.ui.MainActivity;
+//import edu.sjsu.hivo.ui.PropertyDetail;
+
+import static android.support.v4.content.ContextCompat.startActivity;
+//>>>>>>> Stashed changes
 
 public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -29,10 +41,12 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public PropertyListAdapter(ArrayList<Object> propertyList, Context context){
         this.propertyList = propertyList;
-        this.context = context;
-        layoutInflater = LayoutInflater.from(context);
-        Log.i(TAG,"INTO ADATPER");
 
+        this.context = context;
+//        Toast.makeText(context, "propertylist size"+propertyList.size(), Toast.LENGTH_LONG).show();
+
+        layoutInflater = LayoutInflater.from(context);
+        Log.i(TAG,"INTO ADATPER"+propertyList.size());
     }
 
     @Override
@@ -48,14 +62,24 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MyViewHolder vh1 = (MyViewHolder)holder;
-        Property list = (Property)propertyList.get(position);
-        vh1.bindData(list);
+//<<<<<<< Updated upstream
+//        Property list = (Property)propertyList.get(position);
+//        vh1.bindData(list);
+//=======
+//        Property response = (Property)propertyList.get(position);
+//
+        ListPropertyResponse response = (ListPropertyResponse) propertyList.get(position);
+        try {
+            vh1.bindData(response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        >>>>>>> Stashed changes
     }
 
     @Override
     public int getItemCount() {
         return propertyList.size();
-//        return 3;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
@@ -78,14 +102,18 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             propertySqftNoTv = (TextView)itemView.findViewById(R.id.property_sqft_no_tv);
         }
 
-        void bindData(final Property list){
+//<<<<<<< Updated upstream
+//        void bindData(final Property list){
+//=======
+        void bindData(ListPropertyResponse response) throws JSONException {
+//>>>>>>> Stashed changes
             propertyIv.setBackgroundResource(R.drawable.house1);
-            propertyPriceTv.setText(list.getProperty_price_tv());
-            propertyAddressLine1Tv.setText(list.getProperty_address_line1_tv());
-            propertyAddressLine2Tv.setText(list.getProperty_address_line2_tv());
-            propertyBedNoTv.setText(list.getProperty_bed_no_tv());
-            propertyBathNoTv.setText(list.getProperty_bath_no_tv());
-            propertySqftNoTv.setText(list.getProperty_sqft_no_tv());
+            propertyPriceTv.setText(response.getPrice());
+            propertyAddressLine1Tv.setText(response.getAddress());
+            propertyAddressLine2Tv.setText(response.getAddress2());
+//            propertyBedNoTv.setText(list.getProperty_bed_no_tv());
+//            propertyBathNoTv.setText(list.getProperty_bath_no_tv());
+//            propertySqftNoTv.setText(list.getProperty_sqft_no_tv());
 
             propertyIv.setOnClickListener(new View.OnClickListener(){
                 @Override
