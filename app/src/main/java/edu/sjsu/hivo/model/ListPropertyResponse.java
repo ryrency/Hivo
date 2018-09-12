@@ -15,7 +15,7 @@ public class ListPropertyResponse {
     private String url;
     private String interested;
     private final String price = "$7,50000";
-    private final String address1 = "750,The Alameda";
+    private final String address1 = "754,The Alameda";
     private final String address2 = "SanJose, 95126";
     private final String lotSize = "3,000";
     private final String area = "1,086";
@@ -25,8 +25,8 @@ public class ListPropertyResponse {
     private final String baths = "2";
     private String id;
     private String favorite;
-    private final String longitude = "121.8165643";
-    private final String latitude = "37.2629202";
+    private final double longitude = -121.9073828;
+    private final double latitude = 37.3315984;
 
     public ListPropertyResponse(){
 
@@ -65,11 +65,11 @@ public class ListPropertyResponse {
         }
 
 
-        public String getLatitude(){
+        public double getLatitude(){
         return latitude;
     }
 
-        public String getLongitude(){
+        public double getLongitude(){
         return longitude;
         }
 

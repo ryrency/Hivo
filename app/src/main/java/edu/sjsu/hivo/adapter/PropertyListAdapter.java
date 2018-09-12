@@ -12,25 +12,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import edu.sjsu.hivo.R;
-//<<<<<<< Updated upstream
-import edu.sjsu.hivo.model.Property;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
-//=======
 import edu.sjsu.hivo.model.ListPropertyResponse;
 //import edu.sjsu.hivo.model.PropertyList;
 //import edu.sjsu.hivo.ui.MainActivity;
 //import edu.sjsu.hivo.ui.PropertyDetail;
-
 import static android.support.v4.content.ContextCompat.startActivity;
-//>>>>>>> Stashed changes
 
 public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -41,10 +32,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public PropertyListAdapter(ArrayList<Object> propertyList, Context context){
         this.propertyList = propertyList;
-
         this.context = context;
-//        Toast.makeText(context, "propertylist size"+propertyList.size(), Toast.LENGTH_LONG).show();
-
         layoutInflater = LayoutInflater.from(context);
         Log.i(TAG,"INTO ADATPER"+propertyList.size());
     }
@@ -52,6 +40,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder=null;
+        Log.i(TAG,"INTO create viewholder "+propertyList.size());
         View view  = layoutInflater.inflate(R.layout.property_listing_item, parent,false);
         viewHolder = new MyViewHolder(view);
         return viewHolder;
@@ -62,23 +51,18 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MyViewHolder vh1 = (MyViewHolder)holder;
-//<<<<<<< Updated upstream
-//        Property list = (Property)propertyList.get(position);
-//        vh1.bindData(list);
-//=======
-//        Property response = (Property)propertyList.get(position);
-//
+        Log.i(TAG,"INTO create bindholder "+propertyList.size());
         ListPropertyResponse response = (ListPropertyResponse) propertyList.get(position);
         try {
             vh1.bindData(response);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        >>>>>>> Stashed changes
     }
 
     @Override
     public int getItemCount() {
+        Log.i(TAG,"INTO getItemCount "+propertyList.size());
         return propertyList.size();
     }
 
@@ -102,15 +86,16 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             propertySqftNoTv = (TextView)itemView.findViewById(R.id.property_sqft_no_tv);
         }
 
-//<<<<<<< Updated upstream
-//        void bindData(final Property list){
-//=======
+
         void bindData(ListPropertyResponse response) throws JSONException {
-//>>>>>>> Stashed changes
+            Log.i(TAG,"in bindData "+propertyList.size());
             propertyIv.setBackgroundResource(R.drawable.house1);
             propertyPriceTv.setText(response.getPrice());
             propertyAddressLine1Tv.setText(response.getAddress());
             propertyAddressLine2Tv.setText(response.getAddress2());
+            propertyBedNoTv.setText(response.getBeds());
+            propertyBathNoTv.setText(response.getBaths());
+            propertySqftNoTv.setText(response.getArea());
 //            propertyBedNoTv.setText(list.getProperty_bed_no_tv());
 //            propertyBathNoTv.setText(list.getProperty_bath_no_tv());
 //            propertySqftNoTv.setText(list.getProperty_sqft_no_tv());
@@ -118,10 +103,10 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             propertyIv.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Log.i(TAG,"Intending to call PropertyDEtail");
-//                    Intent detailPage = new Intent(context,PropertyDetail.class);
-//                    detailPage.setClass(context,PropertyDetail.class);
-//                    startActivity(detailPage);
+                   // Log.i(TAG,"Intending to call PropertyDEtail");
+                    //Intent detailPage = new Intent(context,PropertyDetail.class);
+                    //detailPage.setClass(context,PropertyDetail.class);
+                   //startActivity(detailPage);
 
                     Context context = v.getContext();
                     Intent intent = new Intent(context, PropertyDetail.class);

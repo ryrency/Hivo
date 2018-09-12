@@ -39,16 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-//        ArrayList<Object> propertyList = new ArrayList<>();
-//        propertyList.add(new Property());
-//        propertyList.add(new Property());
-//        propertyList.add(new Property());
-//        propertyList.add(new Property());
-//        propertyList.add(new Property());
         recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);
-
         propertyList = new ArrayList<>();
         sendRequestAndprintResponse("94560");
 //        recyclerView = (RecyclerView)findViewById(R.id.list_property_rv);
@@ -59,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(verticalLayoutManager);
         recyclerView.setAdapter(adapter);
 
-        recyclerView.setAdapter(adapter);
+        //recyclerView.setAdapter(adapter);
 
 
     }

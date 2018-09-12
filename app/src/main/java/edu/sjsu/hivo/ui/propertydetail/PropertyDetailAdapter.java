@@ -70,7 +70,7 @@ public class PropertyDetailAdapter extends RecyclerView.Adapter<PropertyViewHold
                 view = LayoutInflater
                         .from(parent.getContext())
                         .inflate(R.layout.detail_page_mapview, parent, false);
-                return new MapViewHolder(view);
+                return new MapViewHolder(view, context);
         }
         return null;
 

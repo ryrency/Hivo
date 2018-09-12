@@ -7,11 +7,9 @@
 
     <View
         android:id="@+id/divider1"
-        android:layout_width="0dp"
-        android:layout_height="130dp"
-        android:background="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_width="411dp"
+        android:layout_height="125dp"
+        android:background="@android:color/white" />
 
     <TextView
         android:id="@+id/property_price_tv"
@@ -107,7 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:background="@android:color/white"
-        android:padding="16dp"
+        android:padding="10dp"
         android:text="Key Details"
         android:textColor="@android:color/black"
         android:textSize="22dp"
@@ -119,7 +117,7 @@
     <View
         android:id="@+id/divider2"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="70dp"
         android:layout_marginEnd="2dp"
         android:layout_marginRight="2dp"
         android:layout_marginTop="2dp"
@@ -161,7 +159,7 @@
     <View
         android:id="@+id/divider3"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="70dp"
         android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -200,7 +198,7 @@
     <View
         android:id="@+id/divider4"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="70dp"
         android:layout_marginEnd="2dp"
         android:layout_marginRight="2dp"
         android:layout_marginTop="2dp"
@@ -241,7 +239,7 @@
     <View
         android:id="@+id/divider5"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="70dp"
         android:layout_marginTop="2dp"
         android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -280,7 +278,7 @@
     <View
         android:id="@+id/divider6"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="70dp"
         android:layout_marginEnd="2dp"
         android:layout_marginRight="2dp"
         android:layout_marginTop="2dp"
@@ -306,7 +304,7 @@
     <View
         android:id="@+id/divider7"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="70dp"
         android:layout_marginTop="2dp"
         android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
