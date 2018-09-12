@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import edu.sjsu.hivo.R;
+import edu.sjsu.hivo.model.ListPropertyResponse;
 import edu.sjsu.hivo.model.Property;
 public class KeyDetailsViewHolder extends PropertyViewHolder {
     private TextView price_value_tv;
@@ -55,8 +56,18 @@ public class KeyDetailsViewHolder extends PropertyViewHolder {
     }
 
     @Override
-    public void bindProperty(Property property) {
+    public void bindProperty(ListPropertyResponse property) {
 
-        // bind text views to property
+        price_value_tv.setText(property.getPrice());
+        address_line_1_tv.setText(property.getAddress());
+        address_line_2_tv.setText(property.getAddress2());
+        beds_value_tv.setText(property.getBeds());
+        baths_value_tv.setText(property.getBaths());
+        area_value_tv.setText(property.getArea());
+        lot_size_value_tv.setText(property.getLotSize());
+        property_type_value_tv.setText(property.getPropertyType());
+        build_year_value_tv.setText(property.getSaleType());
+
+
     }
 }

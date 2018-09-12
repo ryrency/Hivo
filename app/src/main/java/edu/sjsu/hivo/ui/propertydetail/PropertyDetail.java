@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import java.util.ArrayList;
-import edu.sjsu.hivo.model.Property;
+import edu.sjsu.hivo.model.ListPropertyResponse;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.CustomPagerAdapter;
@@ -25,23 +25,7 @@ public class PropertyDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.property_details);
         Log.i(TAG,"intoProperty DEtail");
-//        ArrayList<Integer> houseImages = new ArrayList<>();
-//
-//        houseImages.add(R.drawable.house1);
-//        houseImages.add(R.drawable.house2);
-//        houseImages.add(R.drawable.house3);
-//        houseImages.add(R.drawable.house4);
-//        houseImages.add(R.drawable.house5);
-//        houseImages.add(R.drawable.house6);
-
-//        viewPager = (ViewPager) findViewById(R.id.detail_viewpager);
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabDots);
-//        tabLayout.setupWithViewPager(viewPager, true);
-
-//        adapter = new CustomPagerAdapter(this,houseImages);
-//
-//        viewPager.setAdapter(adapter);
-        Property property = new Property();
+        ListPropertyResponse property = new ListPropertyResponse();
         recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);
         propertyDetailAdapter = new PropertyDetailAdapter(this, property);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(PropertyDetail.this, LinearLayoutManager.VERTICAL,

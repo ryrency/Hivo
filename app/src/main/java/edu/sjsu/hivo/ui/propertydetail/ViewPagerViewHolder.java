@@ -2,12 +2,10 @@ package edu.sjsu.hivo.ui.propertydetail ;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-
 import java.util.ArrayList;
-
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.CustomPagerAdapter;
-import edu.sjsu.hivo.model.Property;
+import edu.sjsu.hivo.model.ListPropertyResponse;
 
 public class ViewPagerViewHolder extends PropertyViewHolder {
     ViewPager viewPager;
@@ -18,15 +16,12 @@ public class ViewPagerViewHolder extends PropertyViewHolder {
         super(view);
         this.view = view;
         this.context = context;
-        // get reference to map view
     }
 
     @Override
-    public void bindProperty(Property property) {
-        // bind map view to property
+    public void bindProperty(ListPropertyResponse property) {
         ArrayList<Integer> houseImages = new ArrayList<>();
         viewPager = (ViewPager)view.findViewById(R.id.detail_viewpager);
-
         houseImages.add(R.drawable.house1);
         houseImages.add(R.drawable.house2);
         houseImages.add(R.drawable.house3);

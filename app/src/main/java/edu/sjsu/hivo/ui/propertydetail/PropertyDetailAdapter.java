@@ -12,12 +12,13 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.PropertyListAdapter;
+import edu.sjsu.hivo.model.ListPropertyResponse;
 import edu.sjsu.hivo.model.Property;
 
 public class PropertyDetailAdapter extends RecyclerView.Adapter<PropertyViewHolder> {
 
     private final LayoutInflater layoutInflater;
-    private final Property property;
+    private final ListPropertyResponse property;
     private final Context context;
     String TAG = PropertyListAdapter.class.getSimpleName();
 
@@ -42,7 +43,7 @@ public class PropertyDetailAdapter extends RecyclerView.Adapter<PropertyViewHold
         }
     }
 
-    public PropertyDetailAdapter(Context context, Property property) {
+    public PropertyDetailAdapter(Context context, ListPropertyResponse property) {
         this.property = property;
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
