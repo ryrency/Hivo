@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 //                            Log.i(TAG,listPropertyResponse.getString(zipcode));
-                            Toast.makeText(MainActivity.this, "response: "+response, Toast.LENGTH_LONG).show();
+//                            Toast.makeText(MainActivity.this, "response: "+response, Toast.LENGTH_LONG).show();
 
                         }
                     },
