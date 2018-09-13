@@ -29,8 +29,8 @@ public class ListPropertyResponse implements Parcelable{
     private String baths = "2";
     private String id;
     private String favorite;
-    private double longitude = -121.9073828;
-    private double latitude = 37.3315984;
+    private double longitude ;
+    private double latitude ;
 
     public ListPropertyResponse(){
 
@@ -73,10 +73,18 @@ public class ListPropertyResponse implements Parcelable{
         return Double.valueOf(getString("LATITUDE"));
     }
 
+        public double getParceableLatitude(){
+        return this.latitude;
+        }
+
         public double getLongitude(){
         //return longitude;
             return Double.valueOf(getString("LONGITUDE"));
         }
+
+    public double getParceableLongitude(){
+        return this.longitude;
+    }
         private ListPropertyResponse(JSONObject data) {
             this.data = data;
         }
@@ -84,50 +92,50 @@ public class ListPropertyResponse implements Parcelable{
         return data;
     }
 
-    public  String getPrice(){
+        public  String getPrice(){
 //        return price;
-        return getString("PRICE");
+            return getString("PRICE");
 
-    }
-    public String getParcelPrice(){
-        return this.price;
-    }
+        }
+        public String getParcelPrice(){
+            return this.price;
+        }
 
-    public  String getAddress(){
+        public  String getAddress(){
 
 //       return address1;
-         return getString("ADDRESS");
-    }
+            return getString("ADDRESS");
+        }
 
-    public String getParcelAddress(){
+        public String getParcelAddress(){
         return this.address1;
     }
 
-    public String getAddress2(){
+        public String getAddress2(){
 
 //            return address2;
             return getString("CITY")+getString("STATE")+getString("ZIP");
-    }
-
-    public String getParcelAddress2(){
-        return this.address2;
-    }
-    @Nullable
-    public static ListPropertyResponse fromJSONObjectResponse(JSONObject response) {
-        return new ListPropertyResponse(response);
-    }
-
-    @Nullable
-    public  String getString(String key) {
-        JSONObject data = getData();
-        try {
-            return data.getString(key);
         }
-        catch (JSONException e) {
-            e.printStackTrace();
-            return null;
+
+        public String getParcelAddress2(){
+            return this.address2;
+     }
+        @Nullable
+        public static ListPropertyResponse fromJSONObjectResponse(JSONObject response) {
+            return new ListPropertyResponse(response);
         }
-    }
+
+        @Nullable
+        public  String getString(String key) {
+            JSONObject data = getData();
+            try {
+                return data.getString(key);
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
 
 
     @Override

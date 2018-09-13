@@ -5,10 +5,12 @@ import edu.sjsu.hivo.model.ListPropertyResponse;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import edu.sjsu.hivo.R;
+import edu.sjsu.hivo.ui.MapActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,6 +30,7 @@ public class MapViewHolder extends PropertyViewHolder implements OnMapReadyCallb
     private ListPropertyResponse property;
     private TextView directions;
     private  LatLng currentLocation;
+    String TAG = MapViewHolder.class.getSimpleName();
 
     public MapViewHolder(View view, Context context) {
         super(view);
@@ -52,7 +55,8 @@ public class MapViewHolder extends PropertyViewHolder implements OnMapReadyCallb
 
 
     private void updateMap() {
-        currentLocation = new LatLng(property.getLatitude(), property.getLongitude());
+        currentLocation = new LatLng(property.getParceableLatitude(), property.getParceableLongitude());
+        Log.i(TAG,"currentLocation is " +currentLocation);
         if (googleMap != null && property != null) {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(currentLocation);
@@ -69,7 +73,7 @@ public class MapViewHolder extends PropertyViewHolder implements OnMapReadyCallb
         directions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("geo: " + property.getLatitude()+ ", " + property.getLongitude());
+                Uri gmmIntentUri = Uri.parse("geo: " + property.getParceableLatitude()+ ", " + property.getParceableLongitude());
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 context.startActivity(mapIntent);

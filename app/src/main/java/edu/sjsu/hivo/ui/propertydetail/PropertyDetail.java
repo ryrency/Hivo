@@ -24,9 +24,6 @@ public class PropertyDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.property_details);
-
-
-
         Log.i(TAG,"intoProperty DEtail");
 //        ListPropertyResponse property = new ListPropertyResponse();
         ListPropertyResponse property  = (ListPropertyResponse) getIntent().getParcelableExtra("JSONClass");
