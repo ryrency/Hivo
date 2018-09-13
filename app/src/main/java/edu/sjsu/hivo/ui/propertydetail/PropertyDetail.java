@@ -24,8 +24,13 @@ public class PropertyDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.property_details);
+
+
+
         Log.i(TAG,"intoProperty DEtail");
-        ListPropertyResponse property = new ListPropertyResponse();
+//        ListPropertyResponse property = new ListPropertyResponse();
+        ListPropertyResponse property  = (ListPropertyResponse) getIntent().getParcelableExtra("JSONClass");
+
         recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);
         propertyDetailAdapter = new PropertyDetailAdapter(this, property);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(PropertyDetail.this, LinearLayoutManager.VERTICAL,

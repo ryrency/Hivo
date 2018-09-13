@@ -3,6 +3,7 @@ package edu.sjsu.hivo.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.json.JSONException;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import edu.sjsu.hivo.R;
@@ -29,6 +32,8 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final ArrayList<Object> propertyList;
     private final Context context;
     String TAG = PropertyListAdapter.class.getSimpleName();
+
+    ListPropertyResponse response;
 
     public PropertyListAdapter(ArrayList<Object> propertyList, Context context){
         this.propertyList = propertyList;
@@ -52,9 +57,9 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MyViewHolder vh1 = (MyViewHolder)holder;
         Log.i(TAG,"INTO create bindholder "+propertyList.size());
-        ListPropertyResponse response = (ListPropertyResponse) propertyList.get(position);
+        response = (ListPropertyResponse) propertyList.get(position);
         try {
-            vh1.bindData(response,position);
+            vh1.bindData(response);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -87,7 +92,8 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
 
-        void bindData(ListPropertyResponse response, final int position) throws JSONException {
+
+        void bindData(final ListPropertyResponse response)  throws JSONException {
             Log.i(TAG,"in bindData "+propertyList.size());
             propertyIv.setBackgroundResource(R.drawable.house1);
             propertyPriceTv.setText(response.getPrice());
@@ -111,7 +117,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     Context context = v.getContext();
                     Intent intent = new Intent(context, PropertyDetail.class);
-                    ListPropertyResponse property = (ListPropertyResponse) propertyList.get(position);
+                    intent.putExtra("JSONClass", response);
                     intent.setClass(context,PropertyDetail.class);
                     context.startActivity(intent);
 
