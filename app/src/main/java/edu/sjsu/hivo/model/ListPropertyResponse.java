@@ -66,14 +66,13 @@ public class ListPropertyResponse {
 
 
         public double getLatitude(){
-        return latitude;
+        return Double.valueOf(getString("LATITUDE"));
     }
 
         public double getLongitude(){
-        return longitude;
+        //return longitude;
+            return Double.valueOf(getString("LONGITUDE"));
         }
-
-
         private ListPropertyResponse(JSONObject data) {
             this.data = data;
         }
@@ -82,16 +81,16 @@ public class ListPropertyResponse {
     }
 
     public  String getPrice(){
+        String price  = getString("PRICE");
         return price;
-        //getString("PRICE");
     }
     public  String getAddress(){
-            return address1;
-        // getString("ADDRESS");
+            //return address1;
+            return getString("ADDRESS");
     }
     public String getAddress2(){
-            return address2;
-        //getString("CITY")+getString("STATE")+getString("ZIP");
+            //return address2;
+        return getString("CITY")+getString("STATE")+getString("ZIP");
     }
     @Nullable
     public static ListPropertyResponse fromJSONObjectResponse(JSONObject response) {

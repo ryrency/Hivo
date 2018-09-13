@@ -54,7 +54,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         Log.i(TAG,"INTO create bindholder "+propertyList.size());
         ListPropertyResponse response = (ListPropertyResponse) propertyList.get(position);
         try {
-            vh1.bindData(response);
+            vh1.bindData(response,position);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -87,7 +87,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
 
-        void bindData(ListPropertyResponse response) throws JSONException {
+        void bindData(ListPropertyResponse response, final int position) throws JSONException {
             Log.i(TAG,"in bindData "+propertyList.size());
             propertyIv.setBackgroundResource(R.drawable.house1);
             propertyPriceTv.setText(response.getPrice());
@@ -108,8 +108,10 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     //detailPage.setClass(context,PropertyDetail.class);
                    //startActivity(detailPage);
 
+
                     Context context = v.getContext();
                     Intent intent = new Intent(context, PropertyDetail.class);
+                    ListPropertyResponse property = (ListPropertyResponse) propertyList.get(position);
                     intent.setClass(context,PropertyDetail.class);
                     context.startActivity(intent);
 
