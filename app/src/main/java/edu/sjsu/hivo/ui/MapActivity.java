@@ -2,6 +2,7 @@ package edu.sjsu.hivo.ui;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -12,6 +13,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.sjsu.hivo.model.ListPropertyResponse;
@@ -50,7 +53,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     static final int TAG_CODE_PERMISSION_LOCATION = 110;
     private ArrayList<ListPropertyResponse> markerList = new ArrayList<>();
     String TAG = MapActivity.class.getSimpleName();
-    TextView priceMarker;
+    private TextView mapTextView;
+    private ImageView mapImageView;
     private IconGenerator iconGen;
     private Gson gson = new Gson();
 
@@ -60,7 +64,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_property_listing);
         sendRequestAndprintResponse("94560");
-        priceMarker = findViewById(R.id.price_marker);
+        mapTextView = (TextView)findViewById(R.id.list_map_tv);
+        mapImageView = (ImageView)findViewById(R.id.list_map_iv);
+        moveToListVew();
         iconGen = new IconGenerator(this);
         MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
@@ -68,11 +74,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mapFragment.onResume();
             mapFragment.getMapAsync(this);
         }
-
-
-
-
-        //  map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         checkPermission();
@@ -85,9 +86,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         MapsInitializer.initialize(this);
         this.googleMap = googleMap;
         updateMap();
-
-
-
 
     }
 
@@ -105,10 +103,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
 
         }
-
-
-            //checkPermission();
-            //googleMap.setMyLocationEnabled(true);
         }
 
 
@@ -166,8 +160,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
     public void sendRequestAndprintResponse(final String zipcode) {
         checkPermission();
-//        final JSONObject jsonResponse = new JSONObject();;
-        Log.d(TAG,"inside sendRequestAndprintResponse()"+VolleyNetwork.AWS_ENDPOINT+"/dummy?zipcode="+zipcode);
         try{
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
@@ -187,8 +179,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-//                            Log.i(TAG,listPropertyResponse.getString(zipcode));
-//                            Toast.makeText(MainActivity.this, "response: "+response, Toast.LENGTH_LONG).show();
 
                         }
                     },
@@ -228,6 +218,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             Manifest.permission.INTERNET},
                     TAG_CODE_PERMISSION_LOCATION);
         }
+
+    }
+
+    private void moveToListVew() {
+        mapImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, MainActivity.class);
+                context.startActivity(intent);
+
+            }
+        });
+        mapTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, MainActivity.class);
+                context.startActivity(intent);
+
+            }
+        });
+
 
     }
 

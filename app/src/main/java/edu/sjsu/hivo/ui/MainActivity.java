@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);
         propertyList = new ArrayList<>();
         sendRequestAndprintResponse("94560");
-//        recyclerView = (RecyclerView)findViewById(R.id.list_property_rv);
         mapTextView = (TextView)findViewById(R.id.list_map_tv);
         mapImageView = (ImageView)findViewById(R.id.list_map_iv);
         moveToMapVew();
@@ -59,16 +58,12 @@ public class MainActivity extends AppCompatActivity {
                 false);
         recyclerView.setLayoutManager(verticalLayoutManager);
         recyclerView.setAdapter(adapter);
-
-        //recyclerView.setAdapter(adapter);
-
-
     }
 
     private void addListObject(Object listObject) {
         propertyList.add(listObject);
         adapter.notifyDataSetChanged();
-        recyclerView.scrollToPosition(propertyList.size() - 1);
+        //recyclerView.scrollToPosition(0);
     }
 
     private void moveToMapVew() {
@@ -96,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendRequestAndprintResponse(final String zipcode) {
         checkPermission();
-//        final JSONObject jsonResponse = new JSONObject();;
         Log.d(TAG,"inside sendRequestAndprintResponse()"+VolleyNetwork.AWS_ENDPOINT+"/dummy?zipcode="+zipcode);
         try{
             JsonArrayRequest request = new JsonArrayRequest(
@@ -117,9 +111,6 @@ public class MainActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-//                            Log.i(TAG,listPropertyResponse.getString(zipcode));
-//                            Toast.makeText(MainActivity.this, "response: "+response, Toast.LENGTH_LONG).show();
-
                         }
                     },
                     new Response.ErrorListener() {
@@ -152,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.INTERNET},
                         MY_PERMISSIONS_REQUEST_INTERNET);
-            return;
         }
 
     }

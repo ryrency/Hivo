@@ -37,7 +37,12 @@ public class ListPropertyResponse {
     }
 
         public String getPropertyType() {
-            return propertyType;
+            //return propertyType;
+            propertyType = getString("PROPERTY TYPE");
+            if (propertyType != null && propertyType.equals("Single Family Residential")){
+                propertyType = "Single Family";
+            }
+            return this.propertyType;
         }
 
         public String getSaleType() {

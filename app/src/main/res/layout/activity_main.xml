@@ -13,7 +13,7 @@
         android:layout_marginLeft="4dp"
         app:layout_constraintWidth_default="wrap"
         app:layout_constraintHorizontal_bias="0"
-        android:hint="Map Location"
+        android:hint="Enter Location"
         android:background="@null"
         app:layout_constraintBottom_toTopOf="@id/divider1"
         app:layout_constraintStart_toStartOf="parent"
