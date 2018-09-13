@@ -13,12 +13,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+
 import org.json.JSONException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import edu.sjsu.hivo.R;
+import edu.sjsu.hivo.ui.MapActivity;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
 import edu.sjsu.hivo.model.ListPropertyResponse;
 //import edu.sjsu.hivo.model.PropertyList;
@@ -32,7 +36,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final ArrayList<Object> propertyList;
     private final Context context;
     String TAG = PropertyListAdapter.class.getSimpleName();
-
+    private Gson gson = new Gson();
     ListPropertyResponse response;
 
     public PropertyListAdapter(ArrayList<Object> propertyList, Context context){
@@ -80,6 +84,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private TextView propertyBathNoTv;
         private TextView propertySqftNoTv;
 
+
         public MyViewHolder(View itemView){
             super(itemView);
             propertyIv = (ImageView)itemView.findViewById(R.id.property_iv);
@@ -89,6 +94,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             propertyBedNoTv = (TextView)itemView.findViewById(R.id.property_bed_no_tv);
             propertyBathNoTv = (TextView)itemView.findViewById(R.id.property_baths_no_tv);
             propertySqftNoTv = (TextView)itemView.findViewById(R.id.property_sqft_no_tv);
+
         }
 
 
@@ -102,6 +108,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             propertyBedNoTv.setText(response.getBeds());
             propertyBathNoTv.setText(response.getBaths());
             propertySqftNoTv.setText(response.getArea());
+
 //            propertyBedNoTv.setText(list.getProperty_bed_no_tv());
 //            propertyBathNoTv.setText(list.getProperty_bath_no_tv());
 //            propertySqftNoTv.setText(list.getProperty_sqft_no_tv());
@@ -117,7 +124,8 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     Context context = v.getContext();
                     Intent intent = new Intent(context, PropertyDetail.class);
-                    intent.putExtra("JSONClass", response);
+
+                    intent.putExtra("JSONClass", gson.toJson(response));
                     intent.setClass(context,PropertyDetail.class);
                     context.startActivity(intent);
 

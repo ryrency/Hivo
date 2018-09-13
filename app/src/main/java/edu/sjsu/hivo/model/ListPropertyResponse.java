@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-public class ListPropertyResponse implements Parcelable{
+public class ListPropertyResponse {
     private JSONObject data;
     private String zip;
     private String propertyType = "Condo";
@@ -68,23 +68,15 @@ public class ListPropertyResponse implements Parcelable{
             return baths;
         }
 
-
         public double getLatitude(){
         return Double.valueOf(getString("LATITUDE"));
     }
-
-        public double getParceableLatitude(){
-        return this.latitude;
-        }
 
         public double getLongitude(){
         //return longitude;
             return Double.valueOf(getString("LONGITUDE"));
         }
 
-    public double getParceableLongitude(){
-        return this.longitude;
-    }
         private ListPropertyResponse(JSONObject data) {
             this.data = data;
         }
@@ -93,33 +85,19 @@ public class ListPropertyResponse implements Parcelable{
     }
 
         public  String getPrice(){
-//        return price;
-            return getString("PRICE");
+            String price = '$'+ getString("PRICE");
+            return price;
 
-        }
-        public String getParcelPrice(){
-            return this.price;
         }
 
         public  String getAddress(){
-
-//       return address1;
             return getString("ADDRESS");
         }
 
-        public String getParcelAddress(){
-        return this.address1;
-    }
-
         public String getAddress2(){
-
-//            return address2;
-            return getString("CITY")+getString("STATE")+getString("ZIP");
+            return getString("CITY")+", "+getString("ZIP");
         }
 
-        public String getParcelAddress2(){
-            return this.address2;
-     }
         @Nullable
         public static ListPropertyResponse fromJSONObjectResponse(JSONObject response) {
             return new ListPropertyResponse(response);
@@ -137,69 +115,6 @@ public class ListPropertyResponse implements Parcelable{
             }
         }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(propertyType);
-        dest.writeString(state);
-        dest.writeString(saleType);
-        dest.writeString(city);
-        dest.writeString(url);
-        dest.writeString(interested);
-        dest.writeString(price);
-        dest.writeString(address1);
-        dest.writeString(address2);
-        dest.writeString(lotSize);
-        dest.writeString(area);
-        dest.writeString(pricePerSqFt);
-        dest.writeString(builtYear);
-        dest.writeString(beds);
-        dest.writeString(baths);
-        dest.writeString(id);
-        dest.writeString(favorite);
-        dest.writeDouble(longitude);
-        dest.writeDouble(latitude);
-    }
-
-    private ListPropertyResponse(Parcel in){
-        this.propertyType = in.readString();
-        this.state = in.readString();
-        this.saleType = in.readString();
-        this.city = in.readString();
-        this.url = in.readString();
-        this.interested = in.readString();
-        this.price = in.readString();
-        this.address1 = in.readString();
-        this.address2 = in.readString();
-        this.lotSize = in.readString();
-        this.area = in.readString();
-        this.pricePerSqFt = in.readString();
-        this.builtYear = in.readString();
-        this.beds = in.readString();
-        this.baths = in.readString();
-        this.id = in.readString();
-        this.favorite = in.readString();
-        this.longitude = in.readDouble();
-        this.latitude=in.readDouble();
-
-    }
-
-    public static final Parcelable.Creator<ListPropertyResponse> CREATOR = new Parcelable.Creator<ListPropertyResponse>() {
-        @Override
-        public ListPropertyResponse createFromParcel(Parcel source) {
-            return new ListPropertyResponse(source);
-        }
-
-        @Override
-        public ListPropertyResponse[] newArray(int size) {
-            return new ListPropertyResponse[size];
-        }
-    };
     }
 
 

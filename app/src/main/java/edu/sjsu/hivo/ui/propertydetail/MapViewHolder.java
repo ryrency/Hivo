@@ -55,7 +55,7 @@ public class MapViewHolder extends PropertyViewHolder implements OnMapReadyCallb
 
 
     private void updateMap() {
-        currentLocation = new LatLng(property.getParceableLatitude(), property.getParceableLongitude());
+        currentLocation = new LatLng(property.getLatitude(), property.getLongitude());
         Log.i(TAG,"currentLocation is " +currentLocation);
         if (googleMap != null && property != null) {
             MarkerOptions markerOptions = new MarkerOptions();
@@ -73,7 +73,7 @@ public class MapViewHolder extends PropertyViewHolder implements OnMapReadyCallb
         directions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("geo: " + property.getParceableLatitude()+ ", " + property.getParceableLongitude());
+                Uri gmmIntentUri = Uri.parse("geo: " + property.getLatitude()+ ", " + property.getLongitude());
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 context.startActivity(mapIntent);

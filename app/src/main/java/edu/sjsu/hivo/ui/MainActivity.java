@@ -1,6 +1,8 @@
 package edu.sjsu.hivo.ui;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +10,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -32,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PropertyListAdapter adapter;
     private ArrayList<Object> propertyList;
+    private TextView mapTextView;
+    private ImageView mapImageView;
     static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
 
 
@@ -43,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         propertyList = new ArrayList<>();
         sendRequestAndprintResponse("94560");
 //        recyclerView = (RecyclerView)findViewById(R.id.list_property_rv);
+        mapTextView = (TextView)findViewById(R.id.list_map_tv);
+        mapImageView = (ImageView)findViewById(R.id.list_map_iv);
+        moveToMapVew();
 
         adapter = new PropertyListAdapter(propertyList,this);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,
@@ -59,6 +69,29 @@ public class MainActivity extends AppCompatActivity {
         propertyList.add(listObject);
         adapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(propertyList.size() - 1);
+    }
+
+    private void moveToMapVew() {
+        mapImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, MapActivity.class);
+                context.startActivity(intent);
+
+            }
+        });
+            mapTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, MapActivity.class);
+                    context.startActivity(intent);
+
+                }
+            });
+
+
     }
 
     public void sendRequestAndprintResponse(final String zipcode) {

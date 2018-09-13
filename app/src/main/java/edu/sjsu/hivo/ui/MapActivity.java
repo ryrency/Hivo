@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 import com.google.maps.android.ui.IconGenerator;
 
 import org.json.JSONArray;
@@ -36,6 +37,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.networking.VolleyNetwork;
@@ -48,7 +51,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private ArrayList<ListPropertyResponse> markerList = new ArrayList<>();
     String TAG = MapActivity.class.getSimpleName();
     TextView priceMarker;
-    IconGenerator iconGen;
+    private IconGenerator iconGen;
+    private Gson gson = new Gson();
 
 
     @Override
@@ -122,7 +126,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private String getFormattedPrice(String price){
-        int intPrice = Integer.parseInt(price);
+        String price1 = price.substring(1);
+        int intPrice = Integer.parseInt(price1);
         Log.i(TAG,"intPrice " +intPrice);
         String makePrice = "";
 
@@ -161,6 +166,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
     public void sendRequestAndprintResponse(final String zipcode) {
         checkPermission();
+//        final JSONObject jsonResponse = new JSONObject();;
+        Log.d(TAG,"inside sendRequestAndprintResponse()"+VolleyNetwork.AWS_ENDPOINT+"/dummy?zipcode="+zipcode);
         try{
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
@@ -168,6 +175,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     null,
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response){
+                            Log.d(TAG,"response is:" + response.toString());
                             ListPropertyResponse listPropertyResponse = null;
                             try {
                                 for (int i = 0; i < response.length(); ++i) {
@@ -179,6 +187,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+//                            Log.i(TAG,listPropertyResponse.getString(zipcode));
+//                            Toast.makeText(MainActivity.this, "response: "+response, Toast.LENGTH_LONG).show();
 
                         }
                     },
@@ -189,6 +199,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 return;
                             }
 
+                            Log.e(TAG, "error making server request"+error.getMessage());
                             Toast.makeText(MapActivity.this, "error: "+error.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }

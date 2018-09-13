@@ -90,6 +90,7 @@ public class PropertyDetailAdapter extends RecyclerView.Adapter<PropertyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull PropertyViewHolder viewHolder, int pos) {
+        Log.i(TAG,"getting property object"+ property.getPrice());
         viewHolder.bindProperty(property);
     }
 }

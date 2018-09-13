@@ -7,6 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 import edu.sjsu.hivo.model.ListPropertyResponse;
 
@@ -20,13 +23,16 @@ public class PropertyDetail extends AppCompatActivity {
     private PropertyDetailAdapter propertyDetailAdapter;
     ViewPager viewPager;
     CustomPagerAdapter adapter;
+    Gson gson = new Gson();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.property_details);
         Log.i(TAG,"intoProperty DEtail");
 //        ListPropertyResponse property = new ListPropertyResponse();
-        ListPropertyResponse property  = (ListPropertyResponse) getIntent().getParcelableExtra("JSONClass");
+        String propertyResonse  = getIntent().getStringExtra("JSONClass");
+        ListPropertyResponse property = gson.fromJson(propertyResonse, ListPropertyResponse.class);
+        Log.i(TAG,"getting property object"+ property.getPrice());
 
         recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);
         propertyDetailAdapter = new PropertyDetailAdapter(this, property);
