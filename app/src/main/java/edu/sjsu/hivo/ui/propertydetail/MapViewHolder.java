@@ -1,6 +1,6 @@
 package edu.sjsu.hivo.ui.propertydetail;
 
-import edu.sjsu.hivo.model.ListPropertyResponse;
+import edu.sjsu.hivo.model.Property;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import edu.sjsu.hivo.R;
-import edu.sjsu.hivo.ui.MapActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,7 +17,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
@@ -27,7 +25,7 @@ public class MapViewHolder extends PropertyViewHolder implements OnMapReadyCallb
     private GoogleMap googleMap;
     private MapView mapView;
     private Context context;
-    private ListPropertyResponse property;
+    private Property property;
     private TextView directions;
     private  LatLng currentLocation;
     String TAG = MapViewHolder.class.getSimpleName();
@@ -67,7 +65,7 @@ public class MapViewHolder extends PropertyViewHolder implements OnMapReadyCallb
     }
 
     @Override
-    public void bindProperty(final ListPropertyResponse property) {
+    public void bindProperty(final Property property) {
         this.property = property;
         updateMap();
         directions.setOnClickListener(new View.OnClickListener() {

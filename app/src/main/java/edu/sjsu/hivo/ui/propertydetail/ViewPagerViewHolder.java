@@ -5,7 +5,7 @@ import android.view.View;
 import java.util.ArrayList;
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.CustomPagerAdapter;
-import edu.sjsu.hivo.model.ListPropertyResponse;
+import edu.sjsu.hivo.model.Property;
 
 public class ViewPagerViewHolder extends PropertyViewHolder {
     ViewPager viewPager;
@@ -19,7 +19,7 @@ public class ViewPagerViewHolder extends PropertyViewHolder {
     }
 
     @Override
-    public void bindProperty(ListPropertyResponse property) {
+    public void bindProperty(Property property) {
         ArrayList<Integer> houseImages = new ArrayList<>();
         viewPager = (ViewPager)view.findViewById(R.id.detail_viewpager);
         houseImages.add(R.drawable.house1);

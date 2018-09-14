@@ -2,9 +2,7 @@ package edu.sjsu.hivo.ui.propertydetail ;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import edu.sjsu.hivo.model.ListPropertyResponse;
-
-import edu.sjsu.hivo.ui.propertydetail.*;
+import edu.sjsu.hivo.model.Property;
 
 public abstract class PropertyViewHolder extends RecyclerView.ViewHolder{
     ViewPager viewPager;
@@ -13,5 +11,5 @@ public abstract class PropertyViewHolder extends RecyclerView.ViewHolder{
 
     }
 
-    public abstract void bindProperty(ListPropertyResponse property);
+    public abstract void bindProperty(Property property);
 }

@@ -3,7 +3,6 @@ package edu.sjsu.hivo.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,23 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+
 import edu.sjsu.hivo.R;
-import edu.sjsu.hivo.ui.MapActivity;
+import edu.sjsu.hivo.model.Property;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
-import edu.sjsu.hivo.model.ListPropertyResponse;
 //import edu.sjsu.hivo.model.PropertyList;
 //import edu.sjsu.hivo.ui.MainActivity;
 //import edu.sjsu.hivo.ui.PropertyDetail;
-import static android.support.v4.content.ContextCompat.startActivity;
+
 
 public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -37,7 +33,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final Context context;
     String TAG = PropertyListAdapter.class.getSimpleName();
     private Gson gson = new Gson();
-    ListPropertyResponse response;
+    Property response;
 
     public PropertyListAdapter(ArrayList<Object> propertyList, Context context){
         this.propertyList = propertyList;
@@ -61,7 +57,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MyViewHolder vh1 = (MyViewHolder)holder;
         Log.i(TAG,"INTO create bindholder "+propertyList.size());
-        response = (ListPropertyResponse) propertyList.get(position);
+        response = (Property) propertyList.get(position);
         try {
             vh1.bindData(response);
         } catch (JSONException e) {
@@ -99,7 +95,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
 
-        void bindData(final ListPropertyResponse response)  throws JSONException {
+        void bindData(final Property response)  throws JSONException {
             Log.i(TAG,"in bindData "+propertyList.size());
             propertyIv.setBackgroundResource(R.drawable.house1);
             propertyPriceTv.setText(response.getPrice());

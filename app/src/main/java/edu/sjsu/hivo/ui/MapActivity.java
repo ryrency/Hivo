@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,7 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import edu.sjsu.hivo.model.ListPropertyResponse;
+import edu.sjsu.hivo.model.Property;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -40,23 +39,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.networking.VolleyNetwork;
+import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerClickListener {
     private GoogleMap googleMap;
     private LatLng currentLocation;
     LocationManager locationManager;
     static final int TAG_CODE_PERMISSION_LOCATION = 110;
-    private ArrayList<ListPropertyResponse> markerList = new ArrayList<>();
+    private ArrayList<Property> propertyList = new ArrayList<>();
     String TAG = MapActivity.class.getSimpleName();
     private TextView mapTextView;
     private ImageView mapImageView;
     private IconGenerator iconGen;
     private Gson gson = new Gson();
+    Marker myMarker;
 
 
     @Override
@@ -92,32 +91,61 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     private void updateMap() {
-        for(int i = 0; i< markerList.size(); i++){
+        for(int i = 0; i< propertyList.size(); i++){
             Log.i(TAG,"inside updateMap()" );
-            if (googleMap != null && markerList.get(i) !=null) {
-                currentLocation = new LatLng(markerList.get(i).getLatitude(), markerList.get(i).getLongitude() );
+            if(googleMap != null)
+            if (googleMap != null && propertyList.get(i) !=null) {
+                currentLocation = new LatLng(propertyList.get(i).getLatitude(), propertyList.get(i).getLongitude() );
                 Log.i(TAG,"location from property is" +currentLocation);
-                createMarker(markerList.get(i).getLatitude(), markerList.get(i)
-                        .getLongitude(), markerList.get(i).getPrice(),markerList.get(i).getAddress());
+                myMarker = createMarker(propertyList.get(i).getLatitude(), propertyList.get(i)
+                        .getLongitude(), propertyList.get(i).getPrice(),
+                        propertyList.get(i).getAddress(), propertyList.get(i).getSaleType());
+                myMarker.setTag(propertyList.get(i));
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+                googleMap.setOnMarkerClickListener(this);
+
+
+
             }
 
+
+
         }
         }
 
 
-    protected Marker createMarker(double latitude, double longitude, String price, String address) {
+    protected Marker createMarker(double latitude, double longitude, String price, String address, String saleType) {
         //iconGen.setColor(R.color.green);
-        iconGen.setStyle(IconGenerator.STYLE_GREEN);
+        if(saleType.equals("Sold")) {
+            iconGen.setStyle(IconGenerator.STYLE_RED);
+        }
+        else {
+            iconGen.setStyle(IconGenerator.STYLE_GREEN);
+        }
+
         iconGen.setTextAppearance(R.style.myStyleText);
-        return googleMap.addMarker(new MarkerOptions()
+        myMarker =  googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(latitude, longitude))
                 .title(price)
                 .snippet(address)
                 .icon(BitmapDescriptorFactory.fromBitmap(iconGen.makeIcon(getFormattedPrice(price))))
                 .anchor(iconGen.getAnchorU(), iconGen.getAnchorV()));
 
+        return myMarker;
+
     }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+        if (marker.equals(myMarker))
+        {
+            gotToDetailPageWhenClicked(marker);
+        }
+
+        return false;
+    }
+
 
     private String getFormattedPrice(String price){
         String price1 = price.substring(1);
@@ -142,6 +170,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
+    private void gotToDetailPageWhenClicked(Marker myMarker){
+
+        Intent intent = new Intent(this, PropertyDetail.class);
+        intent.putExtra("JSONClass", gson.toJson(myMarker.getTag()));
+        intent.setClass(this,PropertyDetail.class);
+        this.startActivity(intent);
+
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         googleMap.clear();
@@ -154,8 +191,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
 
-    private void addListObject(ListPropertyResponse listObject) {
-        markerList.add(listObject);
+    private void addListObject(Property listObject) {
+        propertyList.add(listObject);
         updateMap();
     }
     public void sendRequestAndprintResponse(final String zipcode) {
@@ -168,12 +205,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response){
                             Log.d(TAG,"response is:" + response.toString());
-                            ListPropertyResponse listPropertyResponse = null;
+                            Property property = null;
                             try {
                                 for (int i = 0; i < response.length(); ++i) {
                                     JSONObject rec = response.getJSONObject(i);
-                                    listPropertyResponse = ListPropertyResponse.fromJSONObjectResponse(rec);
-                                    addListObject(listPropertyResponse);
+                                    property = Property.fromJSONObjectResponse(rec);
+                                    addListObject(property);
 
                                 }
                             } catch (JSONException e) {

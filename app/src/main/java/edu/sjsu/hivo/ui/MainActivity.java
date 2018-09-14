@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.PropertyListAdapter;
 
-import edu.sjsu.hivo.model.ListPropertyResponse;
+import edu.sjsu.hivo.model.Property;
 import edu.sjsu.hivo.networking.VolleyNetwork;
 
 public class MainActivity extends AppCompatActivity {
@@ -100,12 +100,12 @@ public class MainActivity extends AppCompatActivity {
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response){
                             Log.d(TAG,"response is:" + response.toString());
-                            ListPropertyResponse listPropertyResponse = null;
+                            Property property = null;
                             try {
                                 for (int i = 0; i < response.length(); ++i) {
                                     JSONObject rec = response.getJSONObject(i);
-                                    listPropertyResponse = ListPropertyResponse.fromJSONObjectResponse(rec);
-                                    addListObject(listPropertyResponse);
+                                    property = Property.fromJSONObjectResponse(rec);
+                                    addListObject(property);
 
                                 }
                             } catch (JSONException e) {
