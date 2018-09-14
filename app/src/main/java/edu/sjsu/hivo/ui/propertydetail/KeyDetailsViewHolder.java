@@ -47,9 +47,9 @@ public class KeyDetailsViewHolder extends PropertyViewHolder {
         build_year_tv = (TextView)view.findViewById(R.id.built_year);
         build_year_value_tv = (TextView)view.findViewById(R.id.built_year_value);
         price_per_sq_ft_tv = (TextView)view.findViewById(R.id.price_per_sq_ft);
-        //price_per_sq_ft_value_tv = (TextView)view.findViewById(R.id.price_per_sq_ft_val);
+        price_per_sq_ft_value_tv = (TextView)view.findViewById(R.id.price_per_sq_ft_value);
         status_tv = (TextView)view.findViewById(R.id.status_tv);
-        //status_value_tv = (TextView)view.findViewById(R.id.status_value_tv);
+        status_value_tv = (TextView)view.findViewById(R.id.status_value);
 
 
 
@@ -66,6 +66,7 @@ public class KeyDetailsViewHolder extends PropertyViewHolder {
         area_value_tv.setText(property.getArea());
         lot_size_value_tv.setText(property.getLotSize());
         property_type_value_tv.setText(property.getPropertyType());
-        build_year_value_tv.setText(property.getSaleType());
+        build_year_value_tv.setText(property.getBuiltYear());
+        status_value_tv.setText(property.getSaleType());
     }
 }

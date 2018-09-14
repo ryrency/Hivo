@@ -88,8 +88,9 @@ public class Property {
     }
 
         public  String getPrice(){
-            String price = '$'+ getString("PRICE");
-            return price;
+            price = getValueInStringFromDouble(getString("PRICE"));
+
+            return "$"+price;
 
         }
 
@@ -98,7 +99,7 @@ public class Property {
         }
 
         public String getAddress2(){
-            return getString("CITY")+", "+getString("ZIP");
+            return getString("CITY")+", "+getValueInStringFromDouble(getString("ZIP"));
         }
 
 
@@ -117,6 +118,15 @@ public class Property {
                 e.printStackTrace();
                 return null;
             }
+        }
+
+        private String getValueInStringFromDouble(String value){
+
+            value = !value.contains(".")? value :
+                    value.replaceAll("0*$", "").
+                            replaceAll("\\.$", "");
+            return  value;
+
         }
 
     }

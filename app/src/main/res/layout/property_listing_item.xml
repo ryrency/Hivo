@@ -23,8 +23,8 @@
         android:layout_marginLeft="4dp"
         android:text="$2,309,000"
         android:textSize="22dp"
-        android:textColor="@color/white"
         android:textStyle="bold"
+        android:textColor="@color/white"
         app:layout_constraintTop_toTopOf="@id/property_iv"
         app:layout_constraintStart_toStartOf="parent" />
 
