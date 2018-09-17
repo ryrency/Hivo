@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/* Collecting the List of Response from JSON*/
 public class Property {
     private JSONObject data;
     private String zip;
