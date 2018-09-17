@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             if (error == null || error.networkResponse == null) {
+                                if (error != null) Log.e(TAG, "..", error);
                                 return;
                             }
 

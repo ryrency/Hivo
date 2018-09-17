@@ -88,9 +88,7 @@ public class Property {
     }
 
         public  String getPrice(){
-            price = getValueInStringFromDouble(getString("PRICE"));
-
-            return "$"+price;
+            return "$"+getValueInStringFromDouble(getString("PRICE"));
 
         }
 

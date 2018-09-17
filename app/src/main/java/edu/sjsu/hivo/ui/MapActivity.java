@@ -104,12 +104,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
                 googleMap.setOnMarkerClickListener(this);
 
-
-
             }
-
-
-
         }
         }
 
