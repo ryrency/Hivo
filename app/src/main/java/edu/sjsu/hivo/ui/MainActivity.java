@@ -4,13 +4,17 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +26,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.PropertyListAdapter;
@@ -40,17 +46,55 @@ public class MainActivity extends AppCompatActivity {
     private TextView mapTextView;
     private ImageView mapImageView;
     static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
-
+    EditText userInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);
+        recyclerView = findViewById(R.id.property_details_rv);
         propertyList = new ArrayList<>();
+
+        userInput = (EditText)findViewById(R.id.enter_location);
+        userInput.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // DO THE CALCULATIONS HERE AND SHOW THE RESULT AS PER YOUR CALCULATIONS
+//            Toast.makeText(MainActivity.this, "Getting Text", Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Toast.makeText(MainActivity.this, "Got Text", Toast.LENGTH_LONG).show();
+
+
+                if (s.length() != 0) {
+                    String content = s.toString();
+                    userInput.removeTextChangedListener(this);
+                    userInput.setText(content);
+                    userInput.addTextChangedListener(this);
+                    double[] list = new GeoCoderAccessor(MainActivity.this).getList(content);
+                    if (list != null)
+                        Log.i(TAG, list[0] + " " + list[1]);
+                    Toast.makeText(MainActivity.this, list[0] + " " + list[1], Toast.LENGTH_LONG).show();
+                }
+//        Address address = list.get(0);
+//        double lat = address.getLatitude();
+//        double lng = address.getLongitude();
+//        Log.i(TAG, "Latitude "+lat+" "+lng);
+            }
+        });
+
         sendRequestAndprintResponse("94560");
-        mapTextView = (TextView)findViewById(R.id.list_map_tv);
-        mapImageView = (ImageView)findViewById(R.id.list_map_iv);
+        mapTextView = findViewById(R.id.list_map_tv);
+        mapImageView = findViewById(R.id.list_map_iv);
         moveToMapVew();
 
         adapter = new PropertyListAdapter(propertyList,this);
@@ -73,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
                 Context context = v.getContext();
                 Intent intent = new Intent(context, MapActivity.class);
                 context.startActivity(intent);
-
             }
         });
             mapTextView.setOnClickListener(new View.OnClickListener() {
