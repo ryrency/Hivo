@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Address;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -86,9 +87,11 @@ public class MainActivity extends AppCompatActivity  {
                 }
         });
 
+
        // userInput.addTextChangedListener(this);
 
         //sendRequestAndprintResponse("95126");
+
         mapTextView = findViewById(R.id.list_map_tv);
         mapImageView = findViewById(R.id.list_map_iv);
         moveToMapVew();
@@ -104,6 +107,17 @@ public class MainActivity extends AppCompatActivity  {
         propertyList.add(listObject);
         adapter.notifyDataSetChanged();
         //recyclerView.scrollToPosition(0);
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void moveToMapVew() {
