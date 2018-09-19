@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity  {
     private TextView mapTextView;
     private ImageView mapImageView;
     static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
+    private static final int TAG_CODE_PERMISSION_LOCATION = 110;
     PlacesAutocompleteTextView userInput;
     String userText;
     JSONObject jsonObject;
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity  {
         propertyList = new ArrayList<>();
 
         userInput = (PlacesAutocompleteTextView) findViewById(R.id.enter_location);
+        sendRequestAndprintResponse("95126");
         userInput.setOnPlaceSelectedListener(
                 new OnPlaceSelectedListener() {
                     @Override
@@ -103,13 +106,16 @@ public class MainActivity extends AppCompatActivity  {
     private void addListObject(Object listObject) {
         propertyList.add(listObject);
         adapter.notifyDataSetChanged();
-        //recyclerView.scrollToPosition(0);
+        recyclerView.scrollToPosition(0);
     }
 
     private void moveToMapVew() {
+
         mapImageView.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
                 Context context = v.getContext();
                 Intent intent = new Intent(context, MapActivity.class);
                 context.startActivity(intent);
@@ -186,6 +192,7 @@ public class MainActivity extends AppCompatActivity  {
         }
 
     }
+
 
 
     @Override

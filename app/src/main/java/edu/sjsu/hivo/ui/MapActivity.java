@@ -48,7 +48,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleMap googleMap;
     private LatLng currentLocation;
     LocationManager locationManager;
-    static final int TAG_CODE_PERMISSION_LOCATION = 110;
+    private static final int TAG_CODE_PERMISSION_LOCATION = 110;
     private ArrayList<Property> propertyList = new ArrayList<>();
     String TAG = MapActivity.class.getSimpleName();
     private TextView mapTextView;
@@ -61,8 +61,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkPermission();
         setContentView(R.layout.map_property_listing);
-        sendRequestAndprintResponse("94560");
+        sendRequestAndprintResponse("95126");
         mapTextView = (TextView)findViewById(R.id.list_map_tv);
         mapImageView = (ImageView)findViewById(R.id.list_map_iv);
         moveToListVew();
@@ -73,10 +74,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mapFragment.onResume();
             mapFragment.getMapAsync(this);
         }
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        checkPermission();
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 1, this);
+//        checkPermission();
+//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 1, this);
     }
 
     @Override
@@ -133,12 +133,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public boolean onMarkerClick(final Marker marker) {
 
-        if (marker.equals(myMarker))
-        {
+        //if (marker.equals(myMarker))
+        //{
             gotToDetailPageWhenClicked(marker);
-        }
+        //}
 
-        return false;
+        return true;
     }
 
 
@@ -241,13 +241,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
-                != PackageManager.PERMISSION_GRANTED){
+                        PackageManager.PERMISSION_GRANTED ){
 
             ActivityCompat.requestPermissions(this, new String[] {
                             Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.INTERNET},
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                            },
                     TAG_CODE_PERMISSION_LOCATION);
         }
 
