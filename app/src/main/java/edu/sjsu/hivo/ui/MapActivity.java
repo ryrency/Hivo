@@ -101,7 +101,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         .getLongitude(), propertyList.get(i).getPrice(),
                         propertyList.get(i).getAddress(), propertyList.get(i).getSaleType());
                 myMarker.setTag(propertyList.get(i));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12));
                 googleMap.setOnMarkerClickListener(this);
 
             }
