@@ -12,9 +12,11 @@ import java.util.Locale;
 public class GeoCoderAccessor {
     Geocoder gc;
     ArrayList<Address> list;
+    String TAG = GeoCoderAccessor.class.getSimpleName();
     public GeoCoderAccessor(Context context) {
         Object locale;
         gc = new Geocoder(context, Locale.getDefault());
+
 
     }
 
@@ -33,6 +35,7 @@ public class GeoCoderAccessor {
         try
         {
             List<Address> addresses = gc.getFromLocationName(address , 1);
+            Log.i(TAG, "address sent by user is......" + address);
             if (addresses.size() > 0)
             {
                 location[0] =addresses.get(0).getLatitude();

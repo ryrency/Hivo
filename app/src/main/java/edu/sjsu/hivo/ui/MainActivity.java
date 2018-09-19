@@ -22,6 +22,14 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.seatgeek.placesautocomplete.DetailsCallback;
+import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
+import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
+import com.seatgeek.placesautocomplete.model.AddressComponent;
+import com.seatgeek.placesautocomplete.model.AddressComponentType;
+import com.seatgeek.placesautocomplete.model.Place;
+import com.seatgeek.placesautocomplete.model.PlaceDetails;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +44,7 @@ import edu.sjsu.hivo.adapter.PropertyListAdapter;
 import edu.sjsu.hivo.model.Property;
 import edu.sjsu.hivo.networking.VolleyNetwork;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     String TAG = MainActivity.class.getSimpleName();
 
@@ -46,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView mapTextView;
     private ImageView mapImageView;
     static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
-    EditText userInput;
+    PlacesAutocompleteTextView userInput;
+    String userText;
+    JSONObject jsonObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,44 +65,30 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.property_details_rv);
         propertyList = new ArrayList<>();
 
-        userInput = (EditText)findViewById(R.id.enter_location);
-        userInput.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // DO THE CALCULATIONS HERE AND SHOW THE RESULT AS PER YOUR CALCULATIONS
-//            Toast.makeText(MainActivity.this, "Getting Text", Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Toast.makeText(MainActivity.this, "Got Text", Toast.LENGTH_LONG).show();
-
-
-                if (s.length() != 0) {
-                    String content = s.toString();
-                    userInput.removeTextChangedListener(this);
-                    userInput.setText(content);
-                    userInput.addTextChangedListener(this);
-                    double[] list = new GeoCoderAccessor(MainActivity.this).getList(content);
-                    if (list != null)
-                        Log.i(TAG, list[0] + " " + list[1]);
-                    Toast.makeText(MainActivity.this, list[0] + " " + list[1], Toast.LENGTH_LONG).show();
+        userInput = (PlacesAutocompleteTextView) findViewById(R.id.enter_location);
+        userInput.setOnPlaceSelectedListener(
+                new OnPlaceSelectedListener() {
+                    @Override
+                    public void onPlaceSelected(final Place place) {
+                            userInput.getDetailsFor(place, new DetailsCallback() {
+                                @Override
+                                public void onSuccess(final PlaceDetails details) {
+                                    Log.d("test", "details " + details);
+                                    Double lat = details.geometry.location.lat;
+                                    Double lon = details.geometry.location.lng;
+                                    Log.d("test", "lat and long  is ... " + lat+" "+lon);
+                    }
+                                @Override
+                                public void onFailure(final Throwable failure) {
+                                    Log.d("test", "failure " + failure);
+                                }
+                            });
                 }
-//        Address address = list.get(0);
-//        double lat = address.getLatitude();
-//        double lng = address.getLongitude();
-//        Log.i(TAG, "Latitude "+lat+" "+lng);
-            }
         });
 
-        sendRequestAndprintResponse("94560");
+       // userInput.addTextChangedListener(this);
+
+        //sendRequestAndprintResponse("95126");
         mapTextView = findViewById(R.id.list_map_tv);
         mapImageView = findViewById(R.id.list_map_iv);
         moveToMapVew();
@@ -223,4 +219,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+//    @Override
+//    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//        Toast.makeText(this,"before changes",Toast.LENGTH_LONG).show();
+//
+//    }
+//
+//    @Override
+//    public void onTextChanged(CharSequence s, int start, int before, int count) {
+//        Toast.makeText(this,"during changes",Toast.LENGTH_LONG).show();
+//
+//    }
+//
+//    @Override
+//    public void afterTextChanged(Editable s) {
+//        Toast.makeText(this,"after changes",Toast.LENGTH_LONG).show();
+//        try{
+//            userText = s.toString();
+//            double[] list = new GeoCoderAccessor(MainActivity.this).getList(userText);
+//            if (list != null)
+//                Log.i(TAG, "latitude sent by geocoder is: "+list[0] + " and longitude is:  " + list[1]);
+//            sendRequestAndprintResponse(userText);
+//
+//        }
+//        catch (NumberFormatException e){
+//            e.printStackTrace();
+//        }
+//    }
 }

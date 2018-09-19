@@ -8,7 +8,7 @@ import com.android.volley.toolbox.Volley;
 
 public class VolleyNetwork {
 
-    public static final String AWS_ENDPOINT = "http://polar-basin-49515.herokuapp.com/";
+    public static final String AWS_ENDPOINT = "http://polar-basin-49515.herokuapp.com";
     private static VolleyNetwork mInstance;
     private RequestQueue mrequestQueue;
     //private Context context;

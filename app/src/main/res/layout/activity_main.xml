@@ -6,26 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <EditText
+    <com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
         android:id="@+id/enter_location"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginLeft="4dp"
-        app:layout_constraintWidth_default="wrap"
-        app:layout_constraintHorizontal_bias="0"
         android:hint="Enter Location"
+        android:textCursorDrawable="@drawable/black_cursor"
         android:background="@null"
         app:layout_constraintBottom_toTopOf="@id/divider1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/user_icon"
         android:singleLine="true"
+        app:pacv_googleMapsApiKey="AIzaSyCW6UTTXPDezrtFn4FTDaMkhnNtbUMYKxU"/>
 
-        />
 
     <ImageView
         android:id="@+id/user_icon"
-        android:layout_width="60dp"
+        android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginRight="2dp"
         android:src="@drawable/user"
