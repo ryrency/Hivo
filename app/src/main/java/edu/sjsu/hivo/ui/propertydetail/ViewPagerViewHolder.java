@@ -3,6 +3,7 @@ import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -31,7 +32,11 @@ public class ViewPagerViewHolder extends PropertyViewHolder {
         houseImages.add(R.drawable.house4);
         houseImages.add(R.drawable.house5);
         houseImages.add(R.drawable.house6);
-        adapter = new CustomPagerAdapter(context,houseImages);
+        houseImages.add(R.drawable.house7);
+        houseImages.add(R.drawable.house8);
+        houseImages.add(R.drawable.house9);
+        houseImages.add(R.drawable.house10);
+        adapter = new CustomPagerAdapter(context, houseImages);
 
         viewPager.setAdapter(adapter);
     }

@@ -3,6 +3,7 @@ package edu.sjsu.hivo.ui.propertydetail;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,7 +31,6 @@ public class PropertyImages extends AppCompatActivity{
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG,"Into Create....************");
         setContentView(R.layout.property_detail_images);
         viewPager = (ViewPager)findViewById(R.id.detail_viewpager_only);
         houseImages = new ArrayList<>();
@@ -38,48 +38,23 @@ public class PropertyImages extends AppCompatActivity{
         houseImages = extras.getIntegerArrayList("LIST");
         position = (int) extras.get("POSITION");
 
+        if (savedInstanceState != null) {
+            position = savedInstanceState.getInt("currentItem", 0);
+        }
         adapter = new CustomPagerAdapter(this,houseImages,position);
 
 
         viewPager.setAdapter(adapter);
-        }
-//    @Override
-//    protected Parcelable onSaveInstanceState(Bundle outState) {
-////        super.onSaveInstanceState(outState);
-//
-////        // Save the state of item position
-////        adapter.getCount()
-////        outState.putInt("SELECTED_ITEM_POSITION", adapter.getItemPosition(houseImages));
-////        outState.putIntegerArrayList("LIST", houseImages);
-////        Log.i(TAG, "into OnSavedStateInstance");
-//        Parcelable superState = super.onSaveInstanceState();
-//        RecyclerView.LayoutManager layoutManager = getLayoutManager();
-//            mScrollPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
-//        }
-//        ViewPager.SavedState newState = new ViewPager.SavedState(superState);
-//        newState.mScrollPosition = mScrollPosition;
-//        return newState;
-//    }
-
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//
-//        // Read the state of item position
-//        int mPosition = savedInstanceState.getInt("SELECTED_ITEM_POSITION");
-//        ArrayList<Integer> list = savedInstanceState.getIntegerArrayList("LIST");
-//        Log.i(TAG, "into onRestoreInstanceState");
-//
-//    }
+    }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
-        super.onConfigurationChanged(newConfig);
-        //Update the Flag here
-        orientationLand = (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? true : false);
-        Log.i(TAG,"Orientaion Landscape? "+orientationLand);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        position = viewPager.getCurrentItem();
+        outState.putInt("currentItem", position);
     }
+
+
 
     @Override
     protected void onStart() {
@@ -89,10 +64,7 @@ public class PropertyImages extends AppCompatActivity{
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG, "Into OnPause");
-        Log.d(TAG, "saving listview state @ onPause");
         state = viewPager.onSaveInstanceState();
-        super.onPause();
     }
 
 
@@ -100,12 +72,6 @@ public class PropertyImages extends AppCompatActivity{
     protected void onRestart() {
         super.onRestart();
         Log.i(TAG, "Into OnRestart");
-        viewPager.setAdapter(adapter);
-        // Restore previous state (including selected item index and scroll position)
-        if(state != null) {
-            Log.d(TAG, "trying to restore listview state..");
-            viewPager.onRestoreInstanceState(state);
-        }
     }
 
     @Override

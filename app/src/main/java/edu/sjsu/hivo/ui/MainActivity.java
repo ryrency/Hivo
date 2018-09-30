@@ -20,6 +20,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -150,11 +152,12 @@ public class MainActivity extends AppCompatActivity  {
 
     public void sendRequestAndprintResponse(final String zipcode) {
         checkPermission();
-        Log.d(TAG,"inside sendRequestAndprintResponse()"+VolleyNetwork.AWS_ENDPOINT+"/dummy?zipcode="+zipcode);
+        Log.d(TAG,"inside sendRequestAndprintResponse()"+VolleyNetwork.AWS_ENDPOINT+"cordinate?longitude=-117.024779&latitude=32.837635");
         try{
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
-                    VolleyNetwork.AWS_ENDPOINT+"/dummy?zipcode="+zipcode,
+                    VolleyNetwork.AWS_ENDPOINT+"/cordinate?longitude=-122.0305563&latitude=37.3224014",
+//                    VolleyNetwork.AWS_ENDPOINT+"/95014",
                     null,
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response){
@@ -185,6 +188,11 @@ public class MainActivity extends AppCompatActivity  {
                         }
                     }
             );
+            request.setRetryPolicy(new DefaultRetryPolicy(
+                    10000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+//            requestQueue.add(Request);
 
             VolleyNetwork
                     .getInstance(getApplicationContext())

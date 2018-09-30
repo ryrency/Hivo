@@ -3,6 +3,9 @@ package edu.sjsu.hivo.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
+import edu.sjsu.hivo.ui.propertydetail.PropertyDetailAdapter;
 import edu.sjsu.hivo.ui.propertydetail.PropertyImages;
 
 public class CustomPagerAdapter extends PagerAdapter {
@@ -53,22 +57,30 @@ public class CustomPagerAdapter extends PagerAdapter {
         final ImageView detailIv;
 
         detailIv = (ImageView)layout.findViewById(R.id.detail_images_iv);
-        detailIv.setBackgroundResource(images.get(position));
+        if(mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            Bitmap myImg = BitmapFactory.decodeResource(mContext.getResources(),images.get(position));
+            Matrix matrix = new Matrix();
+            matrix.postRotate(270);
+            Bitmap rotated = Bitmap.createBitmap(myImg, 0, 0, myImg.getWidth(), myImg.getHeight(),
+                    matrix, true);
+            detailIv.setImageBitmap(rotated);
+        }
+        else
+            detailIv.setBackgroundResource(images.get(position));
 
         final int finalPosition = position;
-        detailIv.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(mContext, "Clicked!!", Toast.LENGTH_LONG).show();
-                Log.i("RENCY","CLCKED TWICEx!!");
+        if (mContext instanceof PropertyDetail) {
+            detailIv.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent imagesScreen = new Intent(mContext, PropertyImages.class);
+                    imagesScreen.setClass(mContext, PropertyImages.class);
+                    imagesScreen.putIntegerArrayListExtra("LIST", images);
+                    imagesScreen.putExtra("POSITION", finalPosition);
+                    mContext.startActivity(imagesScreen);
 
-                Intent imagesScreen = new Intent(mContext, PropertyImages.class);
-                imagesScreen.setClass(mContext,PropertyImages.class);
-                imagesScreen.putIntegerArrayListExtra("LIST", images);
-                imagesScreen.putExtra("POSITION", finalPosition);
-                mContext.startActivity(imagesScreen);
-
-            }
-        });
+                }
+            });
+        }
 //        if (holder instanceof PortViewHolder)
 //        {
 //            PortViewHolder portHolder = (PortViewHolder) holder;

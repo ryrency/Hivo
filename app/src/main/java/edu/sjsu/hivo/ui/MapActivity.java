@@ -110,6 +110,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     protected Marker createMarker(double latitude, double longitude, String price, String address, String saleType) {
+        Log.i(TAG, "into createMarker module");
         //iconGen.setColor(R.color.green);
         if(saleType.equals("Sold")) {
             iconGen.setStyle(IconGenerator.STYLE_RED);
