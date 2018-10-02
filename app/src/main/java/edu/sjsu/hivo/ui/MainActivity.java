@@ -1,22 +1,18 @@
 package edu.sjsu.hivo.ui;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.location.Address;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +25,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.seatgeek.placesautocomplete.DetailsCallback;
 import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
-import com.seatgeek.placesautocomplete.model.AddressComponent;
-import com.seatgeek.placesautocomplete.model.AddressComponentType;
 import com.seatgeek.placesautocomplete.model.Place;
 import com.seatgeek.placesautocomplete.model.PlaceDetails;
 
@@ -38,9 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.PropertyListAdapter;
@@ -59,9 +51,15 @@ public class MainActivity extends AppCompatActivity  {
     private ImageView mapImageView;
     static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
     private static final int TAG_CODE_PERMISSION_LOCATION = 110;
+    static final int PICK_FILTER_REQUEST = 1;  // The request code
+
+    String onlyOpenHouse="", maxPrice="", minPrice="", maxSqft="", minSqft="", noOfBeds="", noOfBaths="";
+
     PlacesAutocompleteTextView userInput;
     String userText;
     JSONObject jsonObject;
+    ImageView filterImg;
+    TextView filterText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +67,11 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.property_details_rv);
         propertyList = new ArrayList<>();
+
+        filterImg = (ImageView)findViewById(R.id.list_filter_iv);
+        filterText = (TextView)findViewById(R.id.list_filter_tv);
+
+        getFilterData();
 
         userInput = (PlacesAutocompleteTextView) findViewById(R.id.enter_location);
         sendRequestAndprintResponse("95126");
@@ -123,6 +126,29 @@ public class MainActivity extends AppCompatActivity  {
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void getFilterData(){
+        filterImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent filterIntent = new Intent(context , FilterActivity.class);
+                startActivityForResult(filterIntent,PICK_FILTER_REQUEST);
+//                context.startActivity(filterIntent);
+            }
+        });
+
+        filterText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent filterIntent = new Intent(context , FilterActivity.class);
+                startActivityForResult(filterIntent,PICK_FILTER_REQUEST);
+
+//                context.startActivity(filterIntent);
+            }
+        });
     }
 
     private void moveToMapVew() {
@@ -247,32 +273,23 @@ public class MainActivity extends AppCompatActivity  {
         super.onDestroy();
     }
 
-
-//    @Override
-//    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//        Toast.makeText(this,"before changes",Toast.LENGTH_LONG).show();
-//
-//    }
-//
-//    @Override
-//    public void onTextChanged(CharSequence s, int start, int before, int count) {
-//        Toast.makeText(this,"during changes",Toast.LENGTH_LONG).show();
-//
-//    }
-//
-//    @Override
-//    public void afterTextChanged(Editable s) {
-//        Toast.makeText(this,"after changes",Toast.LENGTH_LONG).show();
-//        try{
-//            userText = s.toString();
-//            double[] list = new GeoCoderAccessor(MainActivity.this).getList(userText);
-//            if (list != null)
-//                Log.i(TAG, "latitude sent by geocoder is: "+list[0] + " and longitude is:  " + list[1]);
-//            sendRequestAndprintResponse(userText);
-//
-//        }
-//        catch (NumberFormatException e){
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case PICK_FILTER_REQUEST: {
+                if (resultCode == FilterActivity.RESULT_OK) {
+                    maxPrice= data.getStringExtra("MAX_PRICE");
+                    minPrice = data.getStringExtra("MIN_PRICE");
+                    maxSqft = data.getStringExtra("MAX_SQFT");
+                    minSqft = data.getStringExtra("MIN_SQFT");
+                    noOfBeds = data.getStringExtra("NO_OF_BEDS");
+                    noOfBaths = data.getStringExtra("NO_OF_BATHS");
+                    onlyOpenHouse = data.getStringExtra("ONLY_OPEN_HOUSE");
+                    Log.i("**TAG*************",onlyOpenHouse+" "+maxPrice+" "+minPrice+" "+maxSqft+" "+ minSqft+" "+noOfBeds+" "+noOfBaths);
+                }
+                break;
+            }
+        }
+    }
 }

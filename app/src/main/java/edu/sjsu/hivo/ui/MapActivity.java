@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import edu.sjsu.hivo.model.Property;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -196,7 +197,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         try{
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
-                    VolleyNetwork.AWS_ENDPOINT+"/dummy?zipcode="+zipcode,
+                    VolleyNetwork.AWS_ENDPOINT+"/cordinate?longitude=-122.0305563&latitude=37.3224014",
                     null,
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response){
@@ -227,7 +228,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
                     }
             );
-
+            request.setRetryPolicy(new DefaultRetryPolicy(
+                    10000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             VolleyNetwork
                     .getInstance(getApplicationContext())
                     .getRequestQueue(this.getApplicationContext())
