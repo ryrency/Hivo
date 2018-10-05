@@ -40,9 +40,9 @@ public class PropertyImages extends AppCompatActivity{
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // Save the state of item position
-        outState.putInt("SELECTED_ITEM_POSITION", adapter.getItemPosition(houseImages));
-        outState.putIntegerArrayList("LIST", houseImages);
-        Log.i(TAG, "into OnSavedStateInstance");
+//        outState.putInt("SELECTED_ITEM_POSITION", adapter.getItemPosition(houseImages));
+//        outState.putIntegerArrayList("LIST", houseImages);
+//        Log.i(TAG, "into OnSavedStateInstance");
     }
 
     @Override
@@ -50,9 +50,9 @@ public class PropertyImages extends AppCompatActivity{
         super.onRestoreInstanceState(savedInstanceState);
 
         // Read the state of item position
-        int mPosition = savedInstanceState.getInt("SELECTED_ITEM_POSITION");
-        ArrayList<Integer> list = savedInstanceState.getIntegerArrayList("LIST");
-        Log.i(TAG, "into onRestoreInstanceState");
+//        int mPosition = savedInstanceState.getInt("SELECTED_ITEM_POSITION");
+//        ArrayList<Integer> list = savedInstanceState.getIntegerArrayList("LIST");
+//        Log.i(TAG, "into onRestoreInstanceState");
 
     }
 
@@ -61,8 +61,8 @@ public class PropertyImages extends AppCompatActivity{
     {
         super.onConfigurationChanged(newConfig);
         //Update the Flag here
-        orientationLand = (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? true : false);
-        Log.i(TAG,"Orientaion Landscape? "+orientationLand);
+//        orientationLand = (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? true : false);
+//        Log.i(TAG,"Orientaion Landscape? "+orientationLand);
     }
 
     @Override
