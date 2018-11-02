@@ -70,6 +70,7 @@ public class MapActivity extends AppCompatActivity implements
     private Gson gson = new Gson();
     Marker myMarker;
     private EditText userInput;
+    private String response;
 
 
     @Override
@@ -80,6 +81,12 @@ public class MapActivity extends AppCompatActivity implements
         mapTextView = (TextView)findViewById(R.id.list_map_tv);
         mapImageView = (ImageView)findViewById(R.id.list_map_iv);
         userInput = (EditText)findViewById(R.id.enter_location);
+        userInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                response = userInput.getText().toString();
+            }
+        });
 
         moveToListVew();
         iconGen = new IconGenerator(this);
