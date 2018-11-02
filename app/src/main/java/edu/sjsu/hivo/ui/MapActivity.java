@@ -33,13 +33,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.ui.IconGenerator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.networking.VolleyNetwork;
@@ -95,7 +98,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         for(int i = 0; i< propertyList.size(); i++){
             Log.i(TAG,"inside updateMap()" );
             if(googleMap != null)
-            if (googleMap != null && propertyList.get(i) !=null) {
+            if (googleMap != null && propertyList.get(i) !=null && propertyList.get(i).isLocationAvailable()) {
                 currentLocation = new LatLng(propertyList.get(i).getLatitude(), propertyList.get(i).getLongitude() );
                 Log.i(TAG,"location from property is" +currentLocation);
                 myMarker = createMarker(propertyList.get(i).getLatitude(), propertyList.get(i)
@@ -200,18 +203,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response){
                             Log.d(TAG,"response is:" + response.toString());
-                            Property property = null;
-                            try {
-                                for (int i = 0; i < response.length(); ++i) {
-                                    JSONObject rec = response.getJSONObject(i);
-                                    property = Property.fromJSONObjectResponse(rec);
-                                    addListObject(property);
-
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
+                            Type listType = new TypeToken<ArrayList<Property>>(){}.getType();
+                            List<Property> list = new Gson().fromJson(response.toString(), listType);
+                            propertyList.addAll(list);
+                            updateMap();
                         }
                     },
                     new Response.ErrorListener() {

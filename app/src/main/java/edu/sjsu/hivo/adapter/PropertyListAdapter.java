@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.model.Property;
@@ -29,13 +30,13 @@ import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
 public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final LayoutInflater layoutInflater;
-    private final ArrayList<Object> propertyList;
+    private final List<Property> propertyList;
     private final Context context;
     String TAG = PropertyListAdapter.class.getSimpleName();
     private Gson gson = new Gson();
     Property response;
 
-    public PropertyListAdapter(ArrayList<Object> propertyList, Context context){
+    public PropertyListAdapter(List<Property> propertyList, Context context){
         this.propertyList = propertyList;
         this.context = context;
         layoutInflater = LayoutInflater.from(context);

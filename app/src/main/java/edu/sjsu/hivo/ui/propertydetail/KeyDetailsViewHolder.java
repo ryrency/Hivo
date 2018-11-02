@@ -66,7 +66,7 @@ public class KeyDetailsViewHolder extends PropertyViewHolder {
         area_value_tv.setText(property.getArea());
         lot_size_value_tv.setText(property.getLotSize());
         property_type_value_tv.setText(property.getPropertyType());
-        build_year_value_tv.setText(property.getBuiltYear());
+        build_year_value_tv.setText(property.getBuilt());
         status_value_tv.setText(property.getSaleType());
     }
 }

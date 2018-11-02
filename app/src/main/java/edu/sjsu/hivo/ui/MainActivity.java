@@ -21,6 +21,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.seatgeek.placesautocomplete.DetailsCallback;
 import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
@@ -31,7 +33,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.PropertyListAdapter;
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity  {
 
     private RecyclerView recyclerView;
     private PropertyListAdapter adapter;
-    private ArrayList<Object> propertyList;
+    private List<Property> propertyList;
     private TextView mapTextView;
     private ImageView mapImageView;
     static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
@@ -114,15 +118,6 @@ public class MainActivity extends AppCompatActivity  {
         recyclerView.setAdapter(adapter);
     }
 
-    private void addListObject(Object listObject) {
-         ArrayList<Object> localList = new ArrayList<>();
-         localList.add(listObject);
-         propertyList = localList;
-        //propertyList.add(listObject);
-//        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        recyclerView.scrollToPosition(0);
-    }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -244,17 +239,10 @@ public class MainActivity extends AppCompatActivity  {
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response) {
                             Log.d(TAG, "response is:" + response.toString());
-                            Property property = null;
-                            try {
-                                for (int i = 0; i < response.length(); ++i) {
-                                    JSONObject rec = response.getJSONObject(i);
-                                    property = Property.fromJSONObjectResponse(rec);
-                                    addListObject(property);
-
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            Type listType = new TypeToken<ArrayList<Property>>(){}.getType();
+                            List<Property> list = new Gson().fromJson(response.toString(), listType);
+                            propertyList.addAll(list);
+                            adapter.notifyDataSetChanged();
                         }
                     },
                     new Response.ErrorListener() {
