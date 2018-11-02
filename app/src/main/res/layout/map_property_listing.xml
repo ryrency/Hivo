@@ -27,7 +27,7 @@
         android:layout_width="60dp"
         android:layout_height="50dp"
         android:layout_marginRight="2dp"
-        android:src="@drawable/user"
+        android:src="@drawable/enter_key"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/divider1"
