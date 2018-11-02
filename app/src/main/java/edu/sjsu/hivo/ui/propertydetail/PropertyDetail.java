@@ -22,8 +22,11 @@ import edu.sjsu.hivo.adapter.CustomPagerAdapter;
 public class PropertyDetail extends AppCompatActivity {
     private static final String TAG = PropertyDetail.class.getSimpleName();
     private RecyclerView recyclerView;
+    private static final String POSITION_KEY = "POSITION";
     private PropertyDetailAdapter propertyDetailAdapter;
     ViewPager viewPager;
+    private Property property;
+    //private int position;
     CustomPagerAdapter adapter;
     Gson gson = new Gson();
     @Override
@@ -31,8 +34,7 @@ public class PropertyDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.property_details);
         Log.i(TAG,"intoProperty DEtail");
-
-        Property property = ((DetailActivityData)EventBus.getDefault().getStickyEvent(DetailActivityData.class)).getProperty();
+        property = ((DetailActivityData)EventBus.getDefault().getStickyEvent(DetailActivityData.class)).getProperty();
         Log.i(TAG,"getting property object"+ property.getPrice());
 
         recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);
@@ -66,6 +68,14 @@ public class PropertyDetail extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        if (property != null) {
+            EventBus.getDefault().postSticky(new DetailActivityData(property));
+        }
     }
 
 }

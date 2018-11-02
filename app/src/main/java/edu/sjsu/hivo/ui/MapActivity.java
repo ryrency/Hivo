@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -70,7 +71,9 @@ public class MapActivity extends AppCompatActivity implements
     private Gson gson = new Gson();
     Marker myMarker;
     private EditText userInput;
+    private ImageView enter;
     private String response;
+    //private String extension;
 
 
     @Override
@@ -81,12 +84,16 @@ public class MapActivity extends AppCompatActivity implements
         mapTextView = (TextView)findViewById(R.id.list_map_tv);
         mapImageView = (ImageView)findViewById(R.id.list_map_iv);
         userInput = (EditText)findViewById(R.id.enter_location);
-        userInput.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                response = userInput.getText().toString();
-            }
-        });
+        enter = (ImageView)findViewById(R.id.user_icon);
+//        enter.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                response = userInput.getText().toString();
+//                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+//                extension = "/zdata?zipcode="+response;
+//                Log.d(TAG,"On clickinggggggggg   response is" +response);
+//            }
+//        });
 
         moveToListVew();
         iconGen = new IconGenerator(this);
@@ -219,6 +226,7 @@ public class MapActivity extends AppCompatActivity implements
                             Log.d(TAG,"response is:" + response.toString());
                             Type listType = new TypeToken<ArrayList<Property>>(){}.getType();
                             List<Property> list = new Gson().fromJson(response.toString(), listType);
+                            propertyList.clear();
                             propertyList.addAll(list);
                             updateMap();
                         }
@@ -308,7 +316,22 @@ public class MapActivity extends AppCompatActivity implements
         Log.d(TAG, "map has stopped moving, current location: " + currentLocation);
         String extension = "/cordinate?longitude="+String.valueOf(currentLocation.longitude)+"&latitude="+String.valueOf(currentLocation.latitude);
         extension = "/zdata?zipcode=95126";
-        googleMap.clear();
+        Log.d(TAG,"inside  Camera Idle" +response);
+        enter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                response = userInput.getText().toString();
+                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                //extension = "/zdata?zipcode="+response;
+                //Log.d(TAG,"On clickinggggggggg   response is" +response);
+            }
+        });
+        if(response != null){
+            //propertyList.clear();
+            googleMap.clear();
+            extension = "/zdata?zipcode="+response;
+        }
+        //googleMap.clear();
         sendRequestAndprintResponse(extension);
     }
 }
