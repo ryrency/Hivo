@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -35,7 +36,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,12 +56,12 @@ public class MainActivity extends AppCompatActivity  {
     private PropertyListAdapter adapter;
     private List<Property> propertyList;
     private TextView mapTextView;
-    private ImageView mapImageView;
+    private ImageView mapImageView, enterButton;
     static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
     private static final int TAG_CODE_PERMISSION_LOCATION = 110;
     static final int PICK_FILTER_REQUEST = 1;  // The request code
 
-    String onlyOpenHouse="", maxPrice="", minPrice="", maxSqft="", minSqft="", noOfBeds="", noOfBaths="";
+    private String  maxPrice="", minPrice="", maxSqft="", minSqft="", noOfBeds="", noOfBaths="", response="";
 
 
     PlacesAutocompleteTextView userInput;
@@ -77,6 +80,8 @@ public class MainActivity extends AppCompatActivity  {
 
         filterImg = (ImageView)findViewById(R.id.list_filter_iv);
         filterText = (TextView)findViewById(R.id.list_filter_tv);
+        enterButton = (ImageView) findViewById(R.id.enter_button);
+
 
         getFilterData();
 
@@ -109,6 +114,16 @@ public class MainActivity extends AppCompatActivity  {
         mapImageView = findViewById(R.id.list_map_iv);
         moveToMapVew();
 
+
+        enterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                response = userInput.getText().toString();
+                checkResponse(response);
+                sendRequestAndprintResponse(extension);
+
+            }
+        });
         adapter = new PropertyListAdapter(propertyList,this);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,
                 false);
@@ -129,6 +144,27 @@ public class MainActivity extends AppCompatActivity  {
         }
 
     }
+
+
+    private void checkResponse(String response){
+        if (!response.equals("")) {
+            if (response.matches("[0-9]+")) {
+
+                extension = "/zdata?zipcode=" + response;
+            } else {
+                try {
+                    response = URLEncoder.encode(response, "UTF-8");
+                    extension = "/data?str=" + response;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else
+            extension="/zdata?zipcode=95126";
+
+    }
+
 
     private void getFilterData(){
         filterImg.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +194,8 @@ public class MainActivity extends AppCompatActivity  {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case PICK_FILTER_REQUEST: {
-                extension="zdata?zipcode=94539";
+                checkResponse(response);
+
                 if (resultCode == FilterActivity.RESULT_OK) {
                     maxPrice= data.getStringExtra("MAX_PRICE");
                     if (!maxPrice.equals("") ){
@@ -196,7 +233,7 @@ public class MainActivity extends AppCompatActivity  {
 
                     Log.d("TEST","Extension"+extension);
                     sendRequestAndprintResponse(extension);
-                    Log.i("**TAG*************",onlyOpenHouse+" "+maxPrice+" "+minPrice+" "+maxSqft+" "+ minSqft+" "+noOfBeds+" "+noOfBaths);
+                    Log.i("**TAG*************",maxPrice+" "+minPrice+" "+maxSqft+" "+ minSqft+" "+noOfBeds+" "+noOfBaths);
                 }
                 break;
             }
@@ -244,6 +281,7 @@ public class MainActivity extends AppCompatActivity  {
                             propertyList.clear();
                             propertyList.addAll(list);
                             adapter.notifyDataSetChanged();
+                            recyclerView.scrollToPosition(0);
                         }
                     },
                     new Response.ErrorListener() {
@@ -255,7 +293,6 @@ public class MainActivity extends AppCompatActivity  {
                             }
 
                             Log.e(TAG, "error making server request" + error.getMessage());
-                            Toast.makeText(MainActivity.this, "error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
             );

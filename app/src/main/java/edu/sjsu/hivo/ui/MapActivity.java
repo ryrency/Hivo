@@ -161,7 +161,7 @@ public class MapActivity extends AppCompatActivity implements
 
         //if (marker.equals(myMarker))
         //{
-            gotToDetailPageWhenClicked(marker);
+        gotToDetailPageWhenClicked(marker);
         //}
 
         return true;
@@ -191,7 +191,7 @@ public class MapActivity extends AppCompatActivity implements
 
 
         }
-      return "";
+        return "";
     }
 
     private void gotToDetailPageWhenClicked(Marker marker){
@@ -266,7 +266,7 @@ public class MapActivity extends AppCompatActivity implements
             ActivityCompat.requestPermissions(this, new String[] {
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION
-                            },
+                    },
                     TAG_CODE_PERMISSION_LOCATION);
         }
 
@@ -335,11 +335,4 @@ public class MapActivity extends AppCompatActivity implements
         sendRequestAndprintResponse(extension);
     }
 }
-
-
-
-
-
-
-
 

@@ -18,13 +18,13 @@
         app:layout_constraintBottom_toTopOf="@id/divider1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/user_icon"
+        app:layout_constraintEnd_toStartOf="@id/enter_button"
         android:singleLine="true"
         app:pacv_googleMapsApiKey="AIzaSyCW6UTTXPDezrtFn4FTDaMkhnNtbUMYKxU"/>
 
 
     <ImageView
-        android:id="@+id/user_icon"
+        android:id="@+id/enter_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginRight="2dp"
@@ -42,7 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@id/user_icon"/>
+        app:layout_constraintTop_toBottomOf="@id/enter_button"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/property_details_rv"
