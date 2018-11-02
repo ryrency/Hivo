@@ -54,7 +54,7 @@ public class MapViewHolder extends PropertyViewHolder implements OnMapReadyCallb
 
     private void updateMap() {
         currentLocation = new LatLng(property.getLatitude(), property.getLongitude());
-        Log.i(TAG,"currentLocation is " +currentLocation);
+        Log.i(TAG,"currentLocation is " + currentLocation);
         if (googleMap != null && property != null) {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(currentLocation);

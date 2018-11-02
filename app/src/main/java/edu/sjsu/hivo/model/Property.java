@@ -136,7 +136,10 @@ public class Property {
     }
 
     public String getLotSize() {
-        return lotSize;
+        if (!TextUtils.isEmpty(lotSize)) {
+            return lotSize;
+        }
+        return "Not Known";
     }
 
     public void setLotSize(String lotSize) {
@@ -207,7 +210,7 @@ public class Property {
 
     public double getLatitude() {
         if (isLocationAvailable()) {
-            return boundary.getCoordinates().get(0);
+            return boundary.getCoordinates().get(1);
         }
         return 0.0;
     }

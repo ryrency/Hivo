@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +61,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private IconGenerator iconGen;
     private Gson gson = new Gson();
     Marker myMarker;
+    private EditText userInput;
 
 
     @Override
@@ -67,9 +69,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         checkPermission();
         setContentView(R.layout.map_property_listing);
-        sendRequestAndprintResponse("95126");
+       // sendRequestAndprintResponse("95126");
         mapTextView = (TextView)findViewById(R.id.list_map_tv);
         mapImageView = (ImageView)findViewById(R.id.list_map_iv);
+        userInput = (EditText)findViewById(R.id.enter_location);
+        sendRequestAndprintResponse("/zdata?zipcode=" + userInput.getText().toString());
         moveToListVew();
         iconGen = new IconGenerator(this);
         MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
@@ -146,26 +150,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     private String getFormattedPrice(String price){
-        String price1 = price.substring(1);
-        int intPrice = Integer.parseInt(price1);
-        Log.i(TAG,"intPrice " +intPrice);
-        String makePrice = "";
+        if(!price.equals("Not known")){
+            String price1 = price.substring(1);
+            int intPrice = Integer.parseInt(price1);
+            Log.i(TAG,"intPrice " +intPrice);
+            String makePrice = "";
 
-        if(intPrice >= 1000 && intPrice < 1000000){
-            intPrice = intPrice/1000;
-            makePrice = String.valueOf(intPrice) +'k';
-            Log.i(TAG,"makePrice value is " +makePrice);
+            if(intPrice >= 1000 && intPrice < 1000000){
+                intPrice = intPrice/1000;
+                makePrice = String.valueOf(intPrice) +'k';
+                Log.i(TAG,"makePrice value is " +makePrice);
+            }
+
+            if(intPrice >= 1000000 && intPrice < 1000000000){
+                intPrice = intPrice/1000000;
+                makePrice = String.valueOf(intPrice) +'M';
+                Log.i(TAG,"makePrice value is " +makePrice);
+            }
+
+            return makePrice;
+
+
         }
-
-        if(intPrice >= 1000000 && intPrice < 1000000000){
-            intPrice = intPrice/1000000;
-            makePrice = String.valueOf(intPrice) +'M';
-            Log.i(TAG,"makePrice value is " +makePrice);
-        }
-
-        return makePrice;
-
-
+      return "";
     }
 
     private void gotToDetailPageWhenClicked(Marker myMarker){
@@ -188,17 +195,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 17.0f));
     }
 
-
-    private void addListObject(Property listObject) {
-        propertyList.add(listObject);
-        updateMap();
-    }
-    public void sendRequestAndprintResponse(final String zipcode) {
+    public void sendRequestAndprintResponse(String extension) {
         checkPermission();
         try{
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
-                    VolleyNetwork.AWS_ENDPOINT+"/cordinate?longitude=-122.0305563&latitude=37.3224014",
+                    VolleyNetwork.AWS_ENDPOINT+extension,
                     null,
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response){

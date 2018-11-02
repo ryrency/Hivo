@@ -9,6 +9,10 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+
+import edu.sjsu.hivo.events.DetailActivityData;
+import edu.sjsu.hivo.events.MainActivityData;
 import edu.sjsu.hivo.model.Property;
 
 import edu.sjsu.hivo.R;
@@ -27,9 +31,16 @@ public class PropertyDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.property_details);
         Log.i(TAG,"intoProperty DEtail");
-//        Property property = new Property();
-        String propertyResonse  = getIntent().getStringExtra("JSONClass");
-        Property property = gson.fromJson(propertyResonse, Property.class);
+
+        Property property = null;
+        if (savedInstanceState == null) {
+            String propertyResonse  = getIntent().getStringExtra("JSONClass");
+            property = gson.fromJson(propertyResonse, Property.class);
+            EventBus.getDefault().postSticky(new DetailActivityData(property));
+        } else {
+            property = ((DetailActivityData)EventBus.getDefault().getStickyEvent(DetailActivityData.class)).getProperty();
+        }
+
         Log.i(TAG,"getting property object"+ property.getPrice());
 
         recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);

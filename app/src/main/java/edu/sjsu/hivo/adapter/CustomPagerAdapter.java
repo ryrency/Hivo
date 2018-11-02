@@ -49,10 +49,10 @@ public class CustomPagerAdapter extends PagerAdapter {
             position = myPosition;
             first = false;
         }
-        position=(position)%images.size();
+        position=(position) % images.size();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ViewGroup layout;
-        layout = (ViewGroup) inflater.inflate(R.layout.detail_images,container,false);
+        layout = (ViewGroup) inflater.inflate(R.layout.detail_images, container,false);
 
         final ImageView detailIv;
 

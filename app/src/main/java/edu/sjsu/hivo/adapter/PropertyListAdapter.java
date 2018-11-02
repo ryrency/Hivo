@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -82,7 +83,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private TextView propertySqftNoTv;
 
 
-        public MyViewHolder(View itemView){
+        MyViewHolder(View itemView){
             super(itemView);
             propertyIv = (ImageView)itemView.findViewById(R.id.property_iv);
             propertyPriceTv = (TextView)itemView.findViewById(R.id.property_price_tv);
@@ -94,11 +95,9 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         }
 
-
-
         void bindData(final Property response)  throws JSONException {
             Log.i(TAG,"in bindData "+propertyList.size());
-            propertyIv.setBackgroundResource(R.drawable.house1);
+            Glide.with(context).load(R.drawable.house2).into(propertyIv);
             propertyPriceTv.setText(response.getPrice());
             propertyAddressLine1Tv.setText(response.getAddress());
             propertyAddressLine2Tv.setText(response.getAddress2());
@@ -106,26 +105,14 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             propertyBathNoTv.setText(response.getBaths());
             propertySqftNoTv.setText(response.getArea());
 
-//            propertyBedNoTv.setText(list.getProperty_bed_no_tv());
-//            propertyBathNoTv.setText(list.getProperty_bath_no_tv());
-//            propertySqftNoTv.setText(list.getProperty_sqft_no_tv());
-
             propertyIv.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                   // Log.i(TAG,"Intending to call PropertyDEtail");
-                    //Intent detailPage = new Intent(context,PropertyDetail.class);
-                    //detailPage.setClass(context,PropertyDetail.class);
-                   //startActivity(detailPage);
-
-
                     Context context = v.getContext();
                     Intent intent = new Intent(context, PropertyDetail.class);
-
                     intent.putExtra("JSONClass", gson.toJson(response));
                     intent.setClass(context,PropertyDetail.class);
                     context.startActivity(intent);
-
                 }
             });
 

@@ -29,6 +29,7 @@ import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import com.seatgeek.placesautocomplete.model.Place;
 import com.seatgeek.placesautocomplete.model.PlaceDetails;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +40,7 @@ import java.util.List;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.PropertyListAdapter;
+import edu.sjsu.hivo.events.MainActivityData;
 import edu.sjsu.hivo.model.Property;
 import edu.sjsu.hivo.networking.VolleyNetwork;
 
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity  {
         getFilterData();
 
         userInput = (PlacesAutocompleteTextView) findViewById(R.id.enter_location);
-        sendRequestAndprintResponse("/zdata?zipcode=95126");
+
         userInput.setOnPlaceSelectedListener(
                 new OnPlaceSelectedListener() {
                     @Override
@@ -100,12 +102,6 @@ public class MainActivity extends AppCompatActivity  {
                 }
         });
         userText = String.valueOf(userInput.getText());
-//        Toast.makeText(this, "User Input "+userText, Toast.LENGTH_LONG).show();
-
-
-        // userInput.addTextChangedListener(this);
-
-        //sendRequestAndprintResponse("95126");
 
         mapTextView = findViewById(R.id.list_map_tv);
         mapImageView = findViewById(R.id.list_map_iv);
@@ -116,6 +112,16 @@ public class MainActivity extends AppCompatActivity  {
                 false);
         recyclerView.setLayoutManager(verticalLayoutManager);
         recyclerView.setAdapter(adapter);
+
+
+        if (savedInstanceState != null) {
+            MainActivityData data = EventBus.getDefault().getStickyEvent(MainActivityData.class);
+            propertyList.addAll(data.getProperties());
+            adapter.notifyDataSetChanged();
+        } else {
+            sendRequestAndprintResponse("/zdata?zipcode=95126");
+        }
+
     }
 
     @Override
@@ -194,7 +200,6 @@ public class MainActivity extends AppCompatActivity  {
                     }
 
                     Log.d("TEST","Extension"+extension);
-//                  extension="zdata?zipcode=94539&bath="+noOfBaths+"&baths_op=gt&sqft="+minSqft+"&sqft_op=lt&sqft="+maxSqft+"&sqft_op=gt&bed="+noOfBeds+"&bed_op=eq&price="+maxPrice+"&price_op=lt&price="+minPrice+"&price_op=gt";
                     sendRequestAndprintResponse(extension);
                     Log.i("**TAG*************",onlyOpenHouse+" "+maxPrice+" "+minPrice+" "+maxSqft+" "+ minSqft+" "+noOfBeds+" "+noOfBaths);
                 }
@@ -230,7 +235,7 @@ public class MainActivity extends AppCompatActivity  {
 
     public void sendRequestAndprintResponse(final String extension) {
         checkPermission();
-        Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + "cordinate?longitude=-117.024779&latitude=32.837635");
+        Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT);
         try {
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
@@ -281,10 +286,7 @@ public class MainActivity extends AppCompatActivity  {
                         new String[]{Manifest.permission.INTERNET},
                         MY_PERMISSIONS_REQUEST_INTERNET);
         }
-
     }
-
-
 
     @Override
     protected void onStart() {
@@ -314,6 +316,14 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        if (propertyList != null) {
+            EventBus.getDefault().postSticky(new MainActivityData(propertyList));
+        }
     }
 
 

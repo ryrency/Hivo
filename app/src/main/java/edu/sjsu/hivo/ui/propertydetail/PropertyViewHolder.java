@@ -5,7 +5,6 @@ import android.view.View;
 import edu.sjsu.hivo.model.Property;
 
 public abstract class PropertyViewHolder extends RecyclerView.ViewHolder{
-    ViewPager viewPager;
     public PropertyViewHolder(View view) {
         super(view);
 
