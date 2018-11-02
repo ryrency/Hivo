@@ -1,14 +1,13 @@
 package edu.sjsu.hivo.ui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -36,7 +35,6 @@ import java.util.ArrayList;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.PropertyListAdapter;
-
 import edu.sjsu.hivo.model.Property;
 import edu.sjsu.hivo.networking.VolleyNetwork;
 
@@ -55,8 +53,9 @@ public class MainActivity extends AppCompatActivity  {
 
     String onlyOpenHouse="", maxPrice="", minPrice="", maxSqft="", minSqft="", noOfBeds="", noOfBaths="";
 
+
     PlacesAutocompleteTextView userInput;
-    String userText;
+    String userText,extension;
     JSONObject jsonObject;
     ImageView filterImg;
     TextView filterText;
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity  {
         getFilterData();
 
         userInput = (PlacesAutocompleteTextView) findViewById(R.id.enter_location);
-        sendRequestAndprintResponse("95126");
+        sendRequestAndprintResponse("/zdata?zipcode=95126");
         userInput.setOnPlaceSelectedListener(
                 new OnPlaceSelectedListener() {
                     @Override
@@ -85,7 +84,9 @@ public class MainActivity extends AppCompatActivity  {
                                     Log.d("test", "details " + details);
                                     Double lat = details.geometry.location.lat;
                                     Double lon = details.geometry.location.lng;
-                                    Log.d("test", "lat and long  is ... " + lat+" "+lon);
+                                    Log.d("TEST:", " Details: " + details.address_components.toString());
+                                    extension="/cordinate?longitude="+String.valueOf(lon)+"&latitude="+String.valueOf(lat);
+                                    sendRequestAndprintResponse(extension);
                     }
                                 @Override
                                 public void onFailure(final Throwable failure) {
@@ -94,9 +95,11 @@ public class MainActivity extends AppCompatActivity  {
                             });
                 }
         });
+        userText = String.valueOf(userInput.getText());
+//        Toast.makeText(this, "User Input "+userText, Toast.LENGTH_LONG).show();
 
 
-       // userInput.addTextChangedListener(this);
+        // userInput.addTextChangedListener(this);
 
         //sendRequestAndprintResponse("95126");
 
@@ -112,7 +115,11 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     private void addListObject(Object listObject) {
-        propertyList.add(listObject);
+         ArrayList<Object> localList = new ArrayList<>();
+         localList.add(listObject);
+         propertyList = localList;
+        //propertyList.add(listObject);
+//        recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(0);
     }
@@ -151,6 +158,56 @@ public class MainActivity extends AppCompatActivity  {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case PICK_FILTER_REQUEST: {
+                extension="zdata?zipcode=94539";
+                if (resultCode == FilterActivity.RESULT_OK) {
+                    maxPrice= data.getStringExtra("MAX_PRICE");
+                    if (!maxPrice.equals("") ){
+                        extension += "&price=" + maxPrice + "&price_op=le";
+                        Log.d("TEST","maxPr "+maxPrice);
+                    }
+
+                    minPrice = data.getStringExtra("MIN_PRICE");
+                    if (!minPrice.equals("")) {
+                        Log.d("TEST","minPrice "+minPrice);
+                        extension += "&price=" + minPrice + "&price_op=gt";
+                    }
+                    maxSqft = data.getStringExtra("MAX_SQFT");
+                    if (!maxSqft.equals("")) {
+                        extension += "&sqft=" + maxSqft + "&sqft_op=lt";
+                        Log.d("TEST","maxSqft "+maxSqft);
+                    }
+                    minSqft = data.getStringExtra("MIN_SQFT");
+                    if (!minSqft.equals("")) {
+                        extension += "&sqft=" + minSqft + "&sqft_op=gt";
+                        Log.d("TEST","minqsft "+minSqft);
+
+                    }
+                    noOfBeds = data.getStringExtra("NO_OF_BEDS");
+                    if (!noOfBeds.equals("0")) {
+                        Log.d("TEST","noOfBeds "+noOfBeds);
+                        extension += "&bed=" + noOfBeds + "&bed_op=eq";
+                    }
+                    noOfBaths = data.getStringExtra("NO_OF_BATHS");
+                    if (!noOfBaths.equals("0.0")) {
+                        Log.d("TEST","noOfBaths "+noOfBaths);
+                        extension += "&bath=" + noOfBaths + "&baths_op=eq";
+                    }
+
+                    Log.d("TEST","Extension"+extension);
+//                  extension="zdata?zipcode=94539&bath="+noOfBaths+"&baths_op=gt&sqft="+minSqft+"&sqft_op=lt&sqft="+maxSqft+"&sqft_op=gt&bed="+noOfBeds+"&bed_op=eq&price="+maxPrice+"&price_op=lt&price="+minPrice+"&price_op=gt";
+                    sendRequestAndprintResponse(extension);
+                    Log.i("**TAG*************",onlyOpenHouse+" "+maxPrice+" "+minPrice+" "+maxSqft+" "+ minSqft+" "+noOfBeds+" "+noOfBaths);
+                }
+                break;
+            }
+        }
+    }
+
     private void moveToMapVew() {
 
         mapImageView.setOnClickListener(new View.OnClickListener() {
@@ -176,18 +233,17 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
-    public void sendRequestAndprintResponse(final String zipcode) {
+    public void sendRequestAndprintResponse(final String extension) {
         checkPermission();
-        Log.d(TAG,"inside sendRequestAndprintResponse()"+VolleyNetwork.AWS_ENDPOINT+"cordinate?longitude=-117.024779&latitude=32.837635");
-        try{
+        Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + "cordinate?longitude=-117.024779&latitude=32.837635");
+        try {
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
-                    VolleyNetwork.AWS_ENDPOINT+"/cordinate?longitude=-122.0305563&latitude=37.3224014",
-//                    VolleyNetwork.AWS_ENDPOINT+"/95014",
+                    VolleyNetwork.AWS_ENDPOINT + extension,
                     null,
                     new Response.Listener<JSONArray>() {
-                        public void onResponse(JSONArray response){
-                            Log.d(TAG,"response is:" + response.toString());
+                        public void onResponse(JSONArray response) {
+                            Log.d(TAG, "response is:" + response.toString());
                             Property property = null;
                             try {
                                 for (int i = 0; i < response.length(); ++i) {
@@ -209,8 +265,8 @@ public class MainActivity extends AppCompatActivity  {
                                 return;
                             }
 
-                            Log.e(TAG, "error making server request"+error.getMessage());
-                            Toast.makeText(MainActivity.this, "error: "+error.getMessage(), Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "error making server request" + error.getMessage());
+                            Toast.makeText(MainActivity.this, "error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
             );
@@ -224,8 +280,7 @@ public class MainActivity extends AppCompatActivity  {
                     .getInstance(getApplicationContext())
                     .getRequestQueue(this.getApplicationContext())
                     .add(request);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -273,23 +328,5 @@ public class MainActivity extends AppCompatActivity  {
         super.onDestroy();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case PICK_FILTER_REQUEST: {
-                if (resultCode == FilterActivity.RESULT_OK) {
-                    maxPrice= data.getStringExtra("MAX_PRICE");
-                    minPrice = data.getStringExtra("MIN_PRICE");
-                    maxSqft = data.getStringExtra("MAX_SQFT");
-                    minSqft = data.getStringExtra("MIN_SQFT");
-                    noOfBeds = data.getStringExtra("NO_OF_BEDS");
-                    noOfBaths = data.getStringExtra("NO_OF_BATHS");
-                    onlyOpenHouse = data.getStringExtra("ONLY_OPEN_HOUSE");
-                    Log.i("**TAG*************",onlyOpenHouse+" "+maxPrice+" "+minPrice+" "+maxSqft+" "+ minSqft+" "+noOfBeds+" "+noOfBaths);
-                }
-                break;
-            }
-        }
-    }
+
 }

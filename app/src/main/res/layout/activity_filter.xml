@@ -19,20 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Bath" />
 
-    <TextView
-        android:id="@+id/open_house_tv"
-        android:layout_width="148dp"
-        android:layout_height="22dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="28dp"
-        android:text="Open Houses only"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider12"
-        app:layout_constraintVertical_bias="0.173"
-        tools:text="Open Houses only" />
+
 
     <TextView
         android:id="@+id/sqft_tv"
@@ -193,21 +180,7 @@
         app:layout_constraintBottom_toTopOf="@+id/divider10"
         app:layout_constraintStart_toEndOf="@+id/bed_minus_btn" />
 
-    <Switch
-        android:id="@+id/open_house_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="28dp"
-        android:text=" "
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.172"
-        app:layout_constraintStart_toEndOf="@+id/open_house_tv"
-        app:layout_constraintTop_toBottomOf="@+id/divider12"
-        app:layout_constraintVertical_bias="0.179" />
+
 
     <TextView
         android:id="@+id/price_any"
@@ -283,14 +256,17 @@
         android:id="@+id/divider12"
         android:layout_width="0dp"
         android:layout_height="10dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="92dp"
         android:background="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/apply_filter_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider11" />
+        app:layout_constraintTop_toBottomOf="@+id/divider11"
+        app:layout_constraintVertical_bias="0.0" />
 
     <View
         android:id="@+id/divider13"
