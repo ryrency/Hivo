@@ -168,7 +168,8 @@ public class MainActivity extends AppCompatActivity  {
                 if (resultCode == FilterActivity.RESULT_OK) {
                     maxPrice= data.getStringExtra("MAX_PRICE");
                     if (!maxPrice.equals("") ){
-                        extension += "&price=" + maxPrice + "&price_op=le";
+                        extension += "&price=" + maxPrice + "&price_op=lt" +
+                                "";
                         Log.d("TEST","maxPr "+maxPrice);
                     }
 
@@ -191,12 +192,12 @@ public class MainActivity extends AppCompatActivity  {
                     noOfBeds = data.getStringExtra("NO_OF_BEDS");
                     if (!noOfBeds.equals("0")) {
                         Log.d("TEST","noOfBeds "+noOfBeds);
-                        extension += "&bed=" + noOfBeds + "&bed_op=eq";
+                        extension += "&beds=" + noOfBeds + "&beds_op=eq";
                     }
                     noOfBaths = data.getStringExtra("NO_OF_BATHS");
                     if (!noOfBaths.equals("0.0")) {
                         Log.d("TEST","noOfBaths "+noOfBaths);
-                        extension += "&bath=" + noOfBaths + "&baths_op=eq";
+                        extension += "&baths=" + noOfBaths + "&baths_op=eq";
                     }
 
                     Log.d("TEST","Extension"+extension);
@@ -235,7 +236,7 @@ public class MainActivity extends AppCompatActivity  {
 
     public void sendRequestAndprintResponse(final String extension) {
         checkPermission();
-        Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT);
+        Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + extension);
         try {
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
@@ -246,6 +247,7 @@ public class MainActivity extends AppCompatActivity  {
                             Log.d(TAG, "response is:" + response.toString());
                             Type listType = new TypeToken<ArrayList<Property>>(){}.getType();
                             List<Property> list = new Gson().fromJson(response.toString(), listType);
+                            propertyList.clear();
                             propertyList.addAll(list);
                             adapter.notifyDataSetChanged();
                         }
