@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,11 +26,10 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
     private TextView priceTv, priceAny, sqftTv, sqftAny;
     private Spinner priceMax, priceMin, sqftMax, sqftMin;
     private Button bedMinus, bedPlus, bathMinus, bathPlus, applyFilter;
-    private Switch openHouseSwitch;
     private EditText noOfBeds, noOfBath;
     private int beds=0;
     String maxPriceRange="", minPriceRange="", maxSqftRange="", minSqftRange="";
-    private boolean openHouse;
+
     private double baths;
     private ArrayAdapter<CharSequence> minAdapter, maxAdapter, minSqAdapter, maxSqAdapter;
 
@@ -55,7 +53,6 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
         noOfBath = (EditText)findViewById(R.id.no_of_bath);
         noOfBeds = (EditText)findViewById(R.id.no_of_beds);
 
-        openHouseSwitch = (Switch) findViewById(R.id.open_house_switch);
 
         applyFilter = (Button)findViewById(R.id.apply_filter_button);
 
@@ -106,14 +103,6 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View v) {
                 addBaths();
-            }
-        });
-
-        openHouseSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked== true)
-                    openHouse = true;
-                else openHouse = false;
             }
         });
 
@@ -348,7 +337,6 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
         resultIntent.putExtra("MIN_SQFT", String.valueOf(minSqftRange));
         resultIntent.putExtra("NO_OF_BEDS", String.valueOf(beds));
         resultIntent.putExtra("NO_OF_BATHS", String.valueOf(baths));
-        resultIntent.putExtra("ONLY_OPEN_HOUSE", String.valueOf(openHouse));
         setResult(FilterActivity.RESULT_OK, resultIntent);
         finish();
     }

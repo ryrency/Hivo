@@ -49,27 +49,27 @@ public class Property {
         }
 
         public String getLotSize() {
-            return lotSize;
+            return getValueInStringFromDouble(getString("LOT SIZE"));
         }
 
         public String getArea() {
-            return area;
+            return getValueInStringFromDouble(getString("SQUARE FEET"));
         }
 
         public String getPricePerSqFt() {
-            return pricePerSqFt;
+            return getValueInStringFromDouble(getString("COST_SQUARE_FEET"));
         }
 
         public String getBuiltYear() {
-            return builtYear;
+            return getValueInStringFromDouble(getString("YEAR BUILT"));
         }
 
         public String getBeds() {
-            return beds;
+            return getValueInStringFromDouble(getString("BEDS"));
         }
 
         public String getBaths() {
-            return baths;
+            return getValueInStringFromDouble(getString("BATHS"));
         }
 
         public double getLatitude(){
