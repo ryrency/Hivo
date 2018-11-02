@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.property_details_rv);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         propertyList = new ArrayList<>();
 
         filterImg = (ImageView)findViewById(R.id.list_filter_iv);
@@ -116,24 +118,16 @@ public class MainActivity extends AppCompatActivity  {
 
         if (savedInstanceState != null) {
             MainActivityData data = EventBus.getDefault().getStickyEvent(MainActivityData.class);
-            propertyList.addAll(data.getProperties());
-            adapter.notifyDataSetChanged();
+            if (data.getProperties() != null) {
+                propertyList.addAll(data.getProperties());
+                adapter.notifyDataSetChanged();
+            } else {
+                sendRequestAndprintResponse("/zdata?zipcode=95126");
+            }
         } else {
             sendRequestAndprintResponse("/zdata?zipcode=95126");
         }
 
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void getFilterData(){

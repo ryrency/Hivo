@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /* Property model, deserialized by Gson. */
@@ -59,6 +60,8 @@ public class Property {
 
     @SerializedName("BOUNDARY")
     private Boundary boundary;
+
+    private List<String> urls;
 
     public Property() {
 
@@ -220,6 +223,21 @@ public class Property {
             return boundary.getCoordinates().get(0);
         }
         return 0.0;
+    }
+
+    // Dummy images for now
+    public List<String> getUrls() {
+        if (urls == null) {
+            urls = new ArrayList<>();
+            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_5.jpg");
+            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_1_5.jpg");
+            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_2_5.jpg");
+            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_3_5.jpg");
+            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_4_5.jpg");
+            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_5_5.jpg");
+        }
+
+        return urls;
     }
 
     private static class Boundary {

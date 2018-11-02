@@ -281,7 +281,7 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
                     minPriceRange = minPriceRange.replace(",","");
                     minPriceRange = minPriceRange.replace("$","");
                     minPriceRange = minPriceRange.trim();
-                    if (maxPriceRange != "") {
+                    if (maxPriceRange.equals("")) {
                         maxPriceRange = maxPriceRange.replace(",","");
                         maxPriceRange = maxPriceRange.replace("$","");
 

@@ -16,7 +16,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
@@ -26,55 +30,31 @@ import edu.sjsu.hivo.ui.propertydetail.PropertyImages;
 public class CustomPagerAdapter extends PagerAdapter {
     String TAG = CustomPagerAdapter.class.getSimpleName();
     private Context mContext;
-    private ArrayList<Integer> images = new ArrayList<>();
-    int myPosition = -1;
-    boolean first;
-    public CustomPagerAdapter(Context context, ArrayList<Integer>images){
-        mContext=context;
-        this.images = images;
-    }
-    public CustomPagerAdapter(Context context, ArrayList<Integer>images, int position){
-        mContext=context;
-        this.images = images;
-        this.myPosition = position;
-        this.first=true;
-    }
+    private List<String> images = new ArrayList<>();
 
+    public CustomPagerAdapter(Context context, List<String> images){
+        mContext=context;
+        this.images = images;
+    }
 
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-
-        if (myPosition != -1 && first==true) {
-            position = myPosition;
-            first = false;
-        }
         position=(position) % images.size();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ViewGroup layout;
         layout = (ViewGroup) inflater.inflate(R.layout.detail_images, container,false);
 
-        final ImageView detailIv;
-
-        detailIv = (ImageView)layout.findViewById(R.id.detail_images_iv);
-        if(mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            Bitmap myImg = BitmapFactory.decodeResource(mContext.getResources(),images.get(position));
-            Matrix matrix = new Matrix();
-            matrix.postRotate(270);
-            Bitmap rotated = Bitmap.createBitmap(myImg, 0, 0, myImg.getWidth(), myImg.getHeight(),
-                    matrix, true);
-            detailIv.setImageBitmap(rotated);
-        }
-        else
-            detailIv.setBackgroundResource(images.get(position));
+        final ImageView detailIv = (ImageView)layout.findViewById(R.id.detail_images_iv);
+        RequestOptions options = new RequestOptions();
+        options = options.centerCrop();
+        Glide.with(mContext).load(images.get(position)).apply(options).into(detailIv);
 
         final int finalPosition = position;
         if (mContext instanceof PropertyDetail) {
             detailIv.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     Intent imagesScreen = new Intent(mContext, PropertyImages.class);
-                    imagesScreen.setClass(mContext, PropertyImages.class);
-                    imagesScreen.putIntegerArrayListExtra("LIST", images);
                     imagesScreen.putExtra("POSITION", finalPosition);
                     mContext.startActivity(imagesScreen);
 
@@ -102,8 +82,7 @@ public class CustomPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        Log.i(TAG,"Images.size "+images.size());
-        return Integer.MAX_VALUE;
+        return images.size();
     }
     @Override
     public boolean isViewFromObject(View view, Object object) {

@@ -7,11 +7,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.CustomPagerAdapter;
 import edu.sjsu.hivo.model.Property;
 
 public class ViewPagerViewHolder extends PropertyViewHolder {
+
     ViewPager viewPager;
     Context context;
     CustomPagerAdapter adapter;
@@ -20,24 +23,12 @@ public class ViewPagerViewHolder extends PropertyViewHolder {
         super(view);
         this.view = view;
         this.context = context;
+        viewPager = view.findViewById(R.id.detail_viewpager);
     }
 
     @Override
     public void bindProperty(Property property) {
-        ArrayList<Integer> houseImages = new ArrayList<>();
-        viewPager = (ViewPager)view.findViewById(R.id.detail_viewpager);
-        houseImages.add(R.drawable.house1);
-        houseImages.add(R.drawable.house2);
-        houseImages.add(R.drawable.house3);
-        houseImages.add(R.drawable.house4);
-        houseImages.add(R.drawable.house5);
-        houseImages.add(R.drawable.house6);
-        houseImages.add(R.drawable.house7);
-        houseImages.add(R.drawable.house8);
-        houseImages.add(R.drawable.house9);
-        houseImages.add(R.drawable.house10);
-        adapter = new CustomPagerAdapter(context, houseImages);
-
+        adapter = new CustomPagerAdapter(context, property.getUrls());
         viewPager.setAdapter(adapter);
     }
 }

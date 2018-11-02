@@ -17,6 +17,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import edu.sjsu.hivo.events.DetailActivityData;
+import edu.sjsu.hivo.events.MapScreenData;
 import edu.sjsu.hivo.model.Property;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -37,6 +40,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.ui.IconGenerator;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,12 +53,16 @@ import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.networking.VolleyNetwork;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerClickListener {
+public class MapActivity extends AppCompatActivity implements
+        OnMapReadyCallback,
+        LocationListener,
+        GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnCameraIdleListener {
     private GoogleMap googleMap;
     private LatLng currentLocation;
     LocationManager locationManager;
     private static final int TAG_CODE_PERMISSION_LOCATION = 110;
-    private ArrayList<Property> propertyList = new ArrayList<>();
+    private List<Property> propertyList = new ArrayList<>();
     String TAG = MapActivity.class.getSimpleName();
     private TextView mapTextView;
     private ImageView mapImageView;
@@ -69,11 +77,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         checkPermission();
         setContentView(R.layout.map_property_listing);
-       // sendRequestAndprintResponse("95126");
         mapTextView = (TextView)findViewById(R.id.list_map_tv);
         mapImageView = (ImageView)findViewById(R.id.list_map_iv);
         userInput = (EditText)findViewById(R.id.enter_location);
-        sendRequestAndprintResponse("/zdata?zipcode=" + userInput.getText().toString());
+
         moveToListVew();
         iconGen = new IconGenerator(this);
         MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
@@ -82,6 +89,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mapFragment.onResume();
             mapFragment.getMapAsync(this);
         }
+
+//        sendRequestAndprintResponse("/zdata?zipcode=95126");
+
 //        checkPermission();
 //        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 //        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 1, this);
@@ -92,29 +102,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.i(TAG,"inside OnMapReady" );
         MapsInitializer.initialize(this);
         this.googleMap = googleMap;
-        updateMap();
-
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.3363447,-121.8811573), 12));
+        googleMap.setOnMarkerClickListener(this);
+        googleMap.setOnCameraIdleListener(this);
     }
 
-
-
     private void updateMap() {
+        Log.i(TAG,"inside updateMap()" );
+        if (googleMap == null) return;
+
         for(int i = 0; i< propertyList.size(); i++){
-            Log.i(TAG,"inside updateMap()" );
-            if(googleMap != null)
-            if (googleMap != null && propertyList.get(i) !=null && propertyList.get(i).isLocationAvailable()) {
-                currentLocation = new LatLng(propertyList.get(i).getLatitude(), propertyList.get(i).getLongitude() );
-                Log.i(TAG,"location from property is" +currentLocation);
+            if (propertyList.get(i).isLocationAvailable()) {
                 myMarker = createMarker(propertyList.get(i).getLatitude(), propertyList.get(i)
-                        .getLongitude(), propertyList.get(i).getPrice(),
+                                .getLongitude(), propertyList.get(i).getPrice(),
                         propertyList.get(i).getAddress(), propertyList.get(i).getSaleType());
                 myMarker.setTag(propertyList.get(i));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12));
-                googleMap.setOnMarkerClickListener(this);
-
             }
         }
-        }
+    }
 
 
     protected Marker createMarker(double latitude, double longitude, String price, String address, String saleType) {
@@ -175,11 +180,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
       return "";
     }
 
-    private void gotToDetailPageWhenClicked(Marker myMarker){
+    private void gotToDetailPageWhenClicked(Marker marker){
 
         Intent intent = new Intent(this, PropertyDetail.class);
-        intent.putExtra("JSONClass", gson.toJson(myMarker.getTag()));
-        intent.setClass(this,PropertyDetail.class);
+        DetailActivityData detailActivityData = new DetailActivityData((Property) marker.getTag());
+        EventBus.getDefault().postSticky(detailActivityData);
         this.startActivity(intent);
 
     }
@@ -196,7 +201,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void sendRequestAndprintResponse(String extension) {
-        checkPermission();
+        Log.d(TAG, "Fetching data");
         try{
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
@@ -290,7 +295,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-
+    @Override
+    public void onCameraIdle() {
+        currentLocation = googleMap.getCameraPosition().target;
+        Log.d(TAG, "map has stopped moving, current location: " + currentLocation);
+        String extension = "/cordinate?longitude="+String.valueOf(currentLocation.longitude)+"&latitude="+String.valueOf(currentLocation.latitude);
+        extension = "/zdata?zipcode=95126";
+        googleMap.clear();
+        sendRequestAndprintResponse(extension);
+    }
 }
 
 

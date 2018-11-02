@@ -32,15 +32,7 @@ public class PropertyDetail extends AppCompatActivity {
         setContentView(R.layout.property_details);
         Log.i(TAG,"intoProperty DEtail");
 
-        Property property = null;
-        if (savedInstanceState == null) {
-            String propertyResonse  = getIntent().getStringExtra("JSONClass");
-            property = gson.fromJson(propertyResonse, Property.class);
-            EventBus.getDefault().postSticky(new DetailActivityData(property));
-        } else {
-            property = ((DetailActivityData)EventBus.getDefault().getStickyEvent(DetailActivityData.class)).getProperty();
-        }
-
+        Property property = ((DetailActivityData)EventBus.getDefault().getStickyEvent(DetailActivityData.class)).getProperty();
         Log.i(TAG,"getting property object"+ property.getPrice());
 
         recyclerView = (RecyclerView)findViewById(R.id.property_details_rv);

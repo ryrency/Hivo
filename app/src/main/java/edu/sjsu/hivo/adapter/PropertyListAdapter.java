@@ -15,12 +15,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.sjsu.hivo.R;
+import edu.sjsu.hivo.events.DetailActivityData;
 import edu.sjsu.hivo.model.Property;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
 //import edu.sjsu.hivo.model.PropertyList;
@@ -95,23 +97,23 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         }
 
-        void bindData(final Property response)  throws JSONException {
+        void bindData(final Property property)  throws JSONException {
             Log.i(TAG,"in bindData "+propertyList.size());
-            Glide.with(context).load(R.drawable.house2).into(propertyIv);
-            propertyPriceTv.setText(response.getPrice());
-            propertyAddressLine1Tv.setText(response.getAddress());
-            propertyAddressLine2Tv.setText(response.getAddress2());
-            propertyBedNoTv.setText(response.getBeds());
-            propertyBathNoTv.setText(response.getBaths());
-            propertySqftNoTv.setText(response.getArea());
+            Glide.with(context).load(property.getUrls().get(1)).into(propertyIv);
+            propertyPriceTv.setText(property.getPrice());
+            propertyAddressLine1Tv.setText(property.getAddress());
+            propertyAddressLine2Tv.setText(property.getAddress2());
+            propertyBedNoTv.setText(property.getBeds());
+            propertyBathNoTv.setText(property.getBaths());
+            propertySqftNoTv.setText(property.getArea());
 
             propertyIv.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
+                    DetailActivityData detailActivityData = new DetailActivityData(property);
+                    EventBus.getDefault().postSticky(detailActivityData);
                     Intent intent = new Intent(context, PropertyDetail.class);
-                    intent.putExtra("JSONClass", gson.toJson(response));
-                    intent.setClass(context,PropertyDetail.class);
                     context.startActivity(intent);
                 }
             });
