@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,6 +52,7 @@ import java.util.List;
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.networking.VolleyNetwork;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
+import edu.sjsu.hivo.ui.utility.FilterUtility;
 
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback,
@@ -73,6 +73,15 @@ public class MapActivity extends AppCompatActivity implements
     private EditText userInput;
     private ImageView enter;
     private String response;
+    private ImageView filterImg;
+    private TextView filterText;
+    private String extension;
+    static final int PICK_FILTER_REQUEST = 2;  // The request code
+    LaunchActivityInterface launchActivityInterface;
+    FilterUtility filterUtility;
+
+
+
     //private String extension;
 
 
@@ -85,15 +94,13 @@ public class MapActivity extends AppCompatActivity implements
         mapImageView = (ImageView)findViewById(R.id.list_map_iv);
         userInput = (EditText)findViewById(R.id.enter_location);
         enter = (ImageView)findViewById(R.id.user_icon);
-//        enter.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                response = userInput.getText().toString();
-//                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
-//                extension = "/zdata?zipcode="+response;
-//                Log.d(TAG,"On clickinggggggggg   response is" +response);
-//            }
-//        });
+        filterImg = (ImageView)findViewById(R.id.list_filter_iv);
+        filterText = (TextView)findViewById(R.id.list_filter_tv);
+        launchActivityInterface = new LaunchActivityImpl();
+
+
+        filterUtility = new FilterUtility(this);
+        filterUtility.getFilterData(filterImg,filterText);
 
         moveToListVew();
         iconGen = new IconGenerator(this);
@@ -103,12 +110,6 @@ public class MapActivity extends AppCompatActivity implements
             mapFragment.onResume();
             mapFragment.getMapAsync(this);
         }
-
-//        sendRequestAndprintResponse("/zdata?zipcode=95126");
-
-//        checkPermission();
-//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 1, this);
     }
 
     @Override
@@ -228,7 +229,21 @@ public class MapActivity extends AppCompatActivity implements
                             List<Property> list = new Gson().fromJson(response.toString(), listType);
                             propertyList.clear();
                             propertyList.addAll(list);
-                            updateMap();
+                            if (propertyList.size() >  1)
+                                updateMap();
+                            else if (propertyList.size() ==  1){
+                                Log.d("RENCY", "Into size==1");
+                                DetailActivityData detailActivityData = new DetailActivityData(propertyList.get(0));
+                                EventBus.getDefault().postSticky(detailActivityData);
+                                Intent intent = new Intent(getApplicationContext(), PropertyDetail.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                                getApplicationContext().startActivity(intent);
+                            }
+                            else{
+                                Toast.makeText(getApplicationContext(), "No Properties Found", Toast.LENGTH_LONG).show();
+
+                            }
                         }
                     },
                     new Response.ErrorListener() {
@@ -256,6 +271,21 @@ public class MapActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICK_FILTER_REQUEST: {
+                extension = launchActivityInterface.checkResponse(response);
+                if (resultCode == FilterActivity.RESULT_OK) {
+                    extension = filterUtility.applyFilterData(data, extension);
+                    sendRequestAndprintResponse(extension);
+                }
+                break;
+            }
+        }
+    }
+
 
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -314,7 +344,7 @@ public class MapActivity extends AppCompatActivity implements
     public void onCameraIdle() {
         currentLocation = googleMap.getCameraPosition().target;
         Log.d(TAG, "map has stopped moving, current location: " + currentLocation);
-        String extension = "/cordinate?longitude="+String.valueOf(currentLocation.longitude)+"&latitude="+String.valueOf(currentLocation.latitude);
+        extension = "/cordinate?longitude="+String.valueOf(currentLocation.longitude)+"&latitude="+String.valueOf(currentLocation.latitude);
         extension = "/zdata?zipcode=95126";
         Log.d(TAG,"inside  Camera Idle" +response);
         enter.setOnClickListener(new View.OnClickListener() {
