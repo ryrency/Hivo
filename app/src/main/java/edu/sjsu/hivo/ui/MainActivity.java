@@ -9,6 +9,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -38,8 +39,6 @@ import com.seatgeek.placesautocomplete.model.PlaceDetails;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -70,7 +69,6 @@ public class MainActivity extends AppCompatActivity  {
     private PlacesAutocompleteTextView userInput;
     private LaunchActivityInterface launchActivityInterface;
     private String userText,extension;
-    private JSONObject jsonObject;
     private ImageView filterImg,sortImg;
     private TextView filterText,sortText;
     private Context context;
@@ -151,12 +149,12 @@ public class MainActivity extends AppCompatActivity  {
     private void getXmlReferences(){
         recyclerView = findViewById(R.id.property_details_rv);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
-        filterImg = (ImageView)findViewById(R.id.list_filter_iv);
-        filterText = (TextView)findViewById(R.id.list_filter_tv);
-        sortImg = (ImageView)findViewById(R.id.list_sort_iv);
-        sortText = (TextView)findViewById(R.id.list_sort_tv);
-        enterButton = (ImageView) findViewById(R.id.enter_button);
-        userInput = (PlacesAutocompleteTextView) findViewById(R.id.enter_location);
+        filterImg = findViewById(R.id.list_filter_iv);
+        filterText = findViewById(R.id.list_filter_tv);
+        sortImg = findViewById(R.id.list_sort_iv);
+        sortText = findViewById(R.id.list_sort_tv);
+        enterButton =  findViewById(R.id.enter_button);
+        userInput =  findViewById(R.id.enter_location);
         userText = String.valueOf(userInput.getText());
         mapTextView = findViewById(R.id.list_map_tv);
         mapImageView = findViewById(R.id.list_map_iv);
@@ -178,13 +176,11 @@ public class MainActivity extends AppCompatActivity  {
         userInput.setOnPlaceSelectedListener(
                 new OnPlaceSelectedListener() {
                     @Override
-                    public void onPlaceSelected(final Place place) {
+                    public void onPlaceSelected(@NonNull final Place place) {
                         userInput.getDetailsFor(place, new DetailsCallback() {
                             @Override
                             public void onSuccess(final PlaceDetails details) {
                                 Log.d("test", "details " + details);
-                                Double lat = details.geometry.location.lat;
-                                Double lon = details.geometry.location.lng;
                                 Log.d("TEST:", " Details: " + details.address_components.toString());
                                 String address = details.address_components.get(0).short_name+" "+ /*street No*/
                                         details.address_components.get(1).short_name;/*Adddress Line 1*/
