@@ -11,10 +11,10 @@ import edu.sjsu.hivo.ui.SortActivity;
 
 public class SortUtility {
 
-    static final int PICK_SORT_REQUEST = 2;  // The request code
-    private String sortOptionSelected ="", minPrice="", maxSqft="", minSqft="", noOfBeds="", noOfBaths="";
+    private static final int PICK_SORT_REQUEST = 2;  // The request code
 
-    Activity mainActivity;
+
+    private Activity mainActivity;
 
     public SortUtility(Activity ac){
         mainActivity = ac;
@@ -43,7 +43,8 @@ public class SortUtility {
 
 
     public String applySortData(Intent data, String extension){
-        sortOptionSelected = data.getStringExtra("SORT_OPTION");
+
+        String sortOptionSelected = data.getStringExtra("SORT_OPTION");
 
         return sortOptionSelected;
 

@@ -9,17 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import edu.sjsu.hivo.ui.FilterActivity;
-import edu.sjsu.hivo.ui.MainActivity;
 
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
-import static android.support.v4.content.ContextCompat.getExternalFilesDirs;
 
 public class FilterUtility {
 
-    static final int PICK_FILTER_REQUEST = 1;  // The request code
-    private String  maxPrice="", minPrice="", maxSqft="", minSqft="", noOfBeds="", noOfBaths="";
+    private static final int PICK_FILTER_REQUEST = 1;  // The request code
 
-    Activity mainActivity;
+    private Activity mainActivity;
 
     public FilterUtility(Activity ac){
         mainActivity = ac;
@@ -48,6 +44,7 @@ public class FilterUtility {
 
 
     public String applyFilterData(Intent data, String extension){
+        String  maxPrice, minPrice, maxSqft, minSqft, noOfBeds, noOfBaths;
         maxPrice= data.getStringExtra("MAX_PRICE");
             if (!maxPrice.equals("") ){
                 extension += "&price=" + maxPrice + "&price_op=lt" +
