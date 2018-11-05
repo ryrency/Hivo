@@ -2,14 +2,13 @@ package edu.sjsu.hivo.ui;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -21,12 +20,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.seatgeek.placesautocomplete.DetailsCallback;
@@ -37,14 +38,15 @@ import com.seatgeek.placesautocomplete.model.PlaceDetails;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.PropertyListAdapter;
@@ -74,20 +76,33 @@ public class MainActivity extends AppCompatActivity  {
     private Context context;
     private FilterUtility filterUtility;
     private SortUtility sortUtility;
+    private String zipcode="";
 
     static final int PICK_FILTER_REQUEST = 1;  // The request code
     static final int PICK_SORT_REQUEST = 2;  // The request code
     static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
+    private FusedLocationProviderClient mFusedLocationClient;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         propertyList = new ArrayList<>();
 
         getXmlReferences();
         checkPermission();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            getLatLonFromLocation(location);
+                        }
+                    }
+                });
 
         userInput.clearFocus();
         filterUtility = new FilterUtility(this);
@@ -99,15 +114,38 @@ public class MainActivity extends AppCompatActivity  {
         setAutoPlaceComplete();
         moveToMapVew();
 
+//        final Bundle savedState = savedInstanceState;
+
+
         adapter = new PropertyListAdapter(propertyList,this);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,
                 false);
         recyclerView.setLayoutManager(verticalLayoutManager);
         recyclerView.setAdapter(adapter);
 
-        setEnterButtonListener();
         checkSavedInstance(savedInstanceState);
 
+
+        setEnterButtonListener();
+
+    }
+
+    private void getLatLonFromLocation(Location location){
+        double currentLat = location.getLatitude();
+        double currentLng = location.getLongitude();
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(currentLat, currentLng, 1);
+
+            zipcode = addresses.get(0).getPostalCode();
+            sendRequestAndprintResponse("/zdata?zipcode="+zipcode);
+
+//            zipcode = addresses.get(0).getPostalCode();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getXmlReferences(){
@@ -218,11 +256,10 @@ public class MainActivity extends AppCompatActivity  {
             if (data.getProperties() != null) {
                 propertyList.addAll(data.getProperties());
                 adapter.notifyDataSetChanged();
-            } else {
-                sendRequestAndprintResponse("/zdata?zipcode=95126");
             }
-        } else {
-            sendRequestAndprintResponse("/zdata?zipcode=95126");
+            else {
+                sendRequestAndprintResponse("/zdata?zipcode="+zipcode);
+            }
         }
     }
 

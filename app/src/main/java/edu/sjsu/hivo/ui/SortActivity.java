@@ -22,7 +22,7 @@ public class SortActivity extends AppCompatActivity {
         private ListView lvCheckBox;
         private TextView btnSortOrder;
         private Button applySort;
-        private String[] sortOptions = {"Price","Bedrooms","Bathrooms","Square Footage"};
+        private String[] sortOptions = {"Price","Beds","Baths","Square Feet"};
         int selectedItem = Integer.MIN_VALUE;
         String sortOptionSelected ="";
 
