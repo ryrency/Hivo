@@ -43,20 +43,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-        <activity android:name=".ui.propertydetail.PropertyDetail"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
-
-        <activity android:name=".ui.propertydetail.PropertyImages"
+        <activity
+            android:name=".ui.propertydetail.PropertyDetail"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity
+            android:name=".ui.propertydetail.PropertyImages"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
-
-        <activity android:name=".ui.MapActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity
+            android:name=".ui.MapActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -78,6 +74,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.sjsu.hivo.ui.MainActivity" />
         </activity>
+        <activity android:name=".ui.SortActivity"></activity>
     </application>
 
 </manifest>

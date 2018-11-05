@@ -54,26 +54,31 @@ import edu.sjsu.hivo.model.Property;
 import edu.sjsu.hivo.networking.VolleyNetwork;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
 import edu.sjsu.hivo.ui.utility.FilterUtility;
+import edu.sjsu.hivo.ui.utility.SortUtility;
 
 public class MainActivity extends AppCompatActivity  {
-    static final int PICK_FILTER_REQUEST = 1;  // The request code
     String TAG = MainActivity.class.getSimpleName();
     private RecyclerView recyclerView;
     private PropertyListAdapter adapter;
     private List<Property> propertyList;
     private TextView mapTextView;
     private ImageView mapImageView, enterButton;
-    static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
     private static final int TAG_CODE_PERMISSION_LOCATION = 110;
     private String response="";
     private PlacesAutocompleteTextView userInput;
     private LaunchActivityInterface launchActivityInterface;
     private String userText,extension;
     private JSONObject jsonObject;
-    private ImageView filterImg;
-    private TextView filterText;
+    private ImageView filterImg,sortImg;
+    private TextView filterText,sortText;
     private Context context;
     private FilterUtility filterUtility;
+    private SortUtility sortUtility;
+
+    static final int PICK_FILTER_REQUEST = 1;  // The request code
+    static final int PICK_SORT_REQUEST = 2;  // The request code
+    static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +92,9 @@ public class MainActivity extends AppCompatActivity  {
         userInput.clearFocus();
         filterUtility = new FilterUtility(this);
         filterUtility.getFilterData(filterImg,filterText);
+
+        sortUtility = new SortUtility(this);
+        sortUtility.getSortData(sortImg,sortText);
 
         setAutoPlaceComplete();
         moveToMapVew();
@@ -107,6 +115,8 @@ public class MainActivity extends AppCompatActivity  {
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         filterImg = (ImageView)findViewById(R.id.list_filter_iv);
         filterText = (TextView)findViewById(R.id.list_filter_tv);
+        sortImg = (ImageView)findViewById(R.id.list_sort_iv);
+        sortText = (TextView)findViewById(R.id.list_sort_tv);
         enterButton = (ImageView) findViewById(R.id.enter_button);
         userInput = (PlacesAutocompleteTextView) findViewById(R.id.enter_location);
         userText = String.valueOf(userInput.getText());
@@ -138,7 +148,15 @@ public class MainActivity extends AppCompatActivity  {
                                 Double lat = details.geometry.location.lat;
                                 Double lon = details.geometry.location.lng;
                                 Log.d("TEST:", " Details: " + details.address_components.toString());
-                                extension = "/cordinate?longitude=" + String.valueOf(lon) + "&latitude=" + String.valueOf(lat);
+                                String address = details.address_components.get(0).short_name+" "+ /*street No*/
+                                        details.address_components.get(1).short_name;/*Adddress Line 1*/
+
+                                try {
+                                    address = URLEncoder.encode(address, "UTF-8");
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                                extension = "/data?str="+address;
                                 sendRequestAndprintResponse(extension);
                                 userInput.clearFocus();
                             }
@@ -213,17 +231,23 @@ public class MainActivity extends AppCompatActivity  {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case PICK_FILTER_REQUEST: {
+            case PICK_FILTER_REQUEST:
                 extension = launchActivityInterface.checkResponse(response);
                 if (resultCode == FilterActivity.RESULT_OK) {
                     extension = filterUtility.applyFilterData(data, extension);
                     sendRequestAndprintResponse(extension);
-                }
-                break;
-            }
-        }
-    }
 
+                    break;
+
+                }
+            case PICK_SORT_REQUEST:
+                super.onActivityResult(requestCode, resultCode, data);
+                if (resultCode == SortActivity.RESULT_OK) {
+                    Toast.makeText(getApplicationContext(), "SORT OPTION SELECTED" + sortUtility.applySortData(data, extension), Toast.LENGTH_LONG).show();
+                }
+        }
+
+    }
     public void sendRequestAndprintResponse(final String extension) {
         checkPermission();
         hideKeyboard(this);
