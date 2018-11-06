@@ -14,20 +14,20 @@ public class SortUtility {
     private static final int PICK_SORT_REQUEST = 2;  // The request code
 
 
-    private Activity mainActivity;
+    private Activity listOrMapActivity;
 
-    public SortUtility(Activity ac){
-        mainActivity = ac;
+    public SortUtility(Activity activity){
+        listOrMapActivity = activity;
     }
 
-    public void getSortData(ImageView sortImg,
-                              TextView sortText){
+    public void setSortListener(ImageView sortImg,
+                                TextView sortText){
         sortImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
                 Intent sortIntent = new Intent(context , SortActivity.class);
-                mainActivity.startActivityForResult(sortIntent,PICK_SORT_REQUEST);
+                listOrMapActivity.startActivityForResult(sortIntent,PICK_SORT_REQUEST);
             }
         });
 
@@ -36,7 +36,7 @@ public class SortUtility {
             public void onClick(View v) {
                 Context context = v.getContext();
                 Intent filterIntent = new Intent(context , SortActivity.class);
-                mainActivity.startActivityForResult(filterIntent,PICK_SORT_REQUEST);
+                listOrMapActivity.startActivityForResult(filterIntent,PICK_SORT_REQUEST);
             }
         });
     }

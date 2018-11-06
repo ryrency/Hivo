@@ -3,6 +3,7 @@ package edu.sjsu.hivo.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,9 +36,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final LayoutInflater layoutInflater;
     private final List<Property> propertyList;
     private final Context context;
-    String TAG = PropertyListAdapter.class.getSimpleName();
-    private Gson gson = new Gson();
-    Property response;
+    private String TAG = PropertyListAdapter.class.getSimpleName();
 
     public PropertyListAdapter(List<Property> propertyList, Context context){
         this.propertyList = propertyList;
@@ -46,9 +45,10 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         Log.i(TAG,"INTO ADATPER"+propertyList.size());
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder=null;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder;
         Log.i(TAG,"INTO create viewholder "+propertyList.size());
         View view  = layoutInflater.inflate(R.layout.property_listing_item, parent,false);
         viewHolder = new MyViewHolder(view);
@@ -58,15 +58,11 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         MyViewHolder vh1 = (MyViewHolder)holder;
         Log.i(TAG,"INTO create bindholder "+propertyList.size());
-        response = (Property) propertyList.get(position);
-        try {
-            vh1.bindData(response);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        Property response = propertyList.get(position);
+        vh1.bindData(response);
     }
 
     @Override
@@ -87,17 +83,17 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         MyViewHolder(View itemView){
             super(itemView);
-            propertyIv = (ImageView)itemView.findViewById(R.id.property_iv);
-            propertyPriceTv = (TextView)itemView.findViewById(R.id.property_price_tv);
-            propertyAddressLine1Tv = (TextView)itemView.findViewById(R.id.property_address_line1_tv);
-            propertyAddressLine2Tv = (TextView) itemView.findViewById(R.id.property_address_line2_tv);
-            propertyBedNoTv = (TextView)itemView.findViewById(R.id.property_bed_no_tv);
-            propertyBathNoTv = (TextView)itemView.findViewById(R.id.property_baths_no_tv);
-            propertySqftNoTv = (TextView)itemView.findViewById(R.id.property_sqft_no_tv);
+            propertyIv = itemView.findViewById(R.id.property_iv);
+            propertyPriceTv = itemView.findViewById(R.id.property_price_tv);
+            propertyAddressLine1Tv = itemView.findViewById(R.id.property_address_line1_tv);
+            propertyAddressLine2Tv =  itemView.findViewById(R.id.property_address_line2_tv);
+            propertyBedNoTv = itemView.findViewById(R.id.property_bed_no_tv);
+            propertyBathNoTv = itemView.findViewById(R.id.property_baths_no_tv);
+            propertySqftNoTv = itemView.findViewById(R.id.property_sqft_no_tv);
 
         }
 
-        void bindData(final Property property)  throws JSONException {
+        void bindData(final Property property) {
             Log.i(TAG,"in bindData "+propertyList.size());
             Glide.with(context).load(property.getUrls().get(1)).into(propertyIv);
             propertyPriceTv.setText(property.getPrice());

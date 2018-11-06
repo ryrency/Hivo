@@ -19,26 +19,28 @@ import edu.sjsu.hivo.R;
 public class SortActivity extends AppCompatActivity {
 
 
-        private ListView lvCheckBox;
-        private TextView btnSortOrder;
-        private Button applySort;
+
         private String[] sortOptions = {"Price","Beds","Baths","Square Feet"};
         int selectedItem = Integer.MIN_VALUE;
         String sortOptionSelected ="";
 
+    ListView lvCheckBox;
 
     @Override
         public void onCreate(Bundle savedInstanceState)
         {
+            TextView btnSortOrder;
+            Button applySort;
+
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_sort);
 
-            btnSortOrder = (TextView)findViewById(R.id.sortOrder);
-            applySort = (Button)findViewById(R.id.apply_sort_button);
+            btnSortOrder = findViewById(R.id.sortOrder);
+            applySort = findViewById(R.id.apply_sort_button);
 
-            lvCheckBox = (ListView)findViewById(R.id.lvCheckBox);
+            lvCheckBox = findViewById(R.id.lvCheckBox);
             lvCheckBox.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            lvCheckBox.setAdapter(new ArrayAdapter<String>(this,
+            lvCheckBox.setAdapter(new ArrayAdapter<>(this,
                     android.R.layout.simple_list_item_multiple_choice, sortOptions));
 
 
@@ -59,14 +61,15 @@ public class SortActivity extends AppCompatActivity {
                 {
                     if(selectedItem == position)
                     {
+                        lvCheckBox.setItemChecked(position,false);
                         selectedItem = Integer.MIN_VALUE;
+
                     }
                     else
                     {
                         selectedItem = position;
 
                     }
-                    Toast.makeText(SortActivity.this, " selected Item"+selectedItem, Toast.LENGTH_SHORT).show();
                 }
             });
 

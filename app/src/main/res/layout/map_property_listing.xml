@@ -23,7 +23,7 @@
         />
 
     <ImageView
-        android:id="@+id/user_icon"
+        android:id="@+id/enter_button"
         android:layout_width="60dp"
         android:layout_height="50dp"
         android:layout_marginRight="2dp"

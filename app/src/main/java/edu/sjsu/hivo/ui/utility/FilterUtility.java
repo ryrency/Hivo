@@ -15,20 +15,20 @@ public class FilterUtility {
 
     private static final int PICK_FILTER_REQUEST = 1;  // The request code
 
-    private Activity mainActivity;
+    private Activity listOrMapActivity;
 
-    public FilterUtility(Activity ac){
-        mainActivity = ac;
+    public FilterUtility(Activity activity){
+        listOrMapActivity = activity;
     }
 
-    public void getFilterData(ImageView filterImg,
-            TextView filterText){
+    public void setFilterListener(ImageView filterImg,
+                                  TextView filterText){
         filterImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
                 Intent filterIntent = new Intent(context , FilterActivity.class);
-                mainActivity.startActivityForResult(filterIntent,PICK_FILTER_REQUEST);
+                listOrMapActivity.startActivityForResult(filterIntent,PICK_FILTER_REQUEST);
             }
         });
 
@@ -37,7 +37,7 @@ public class FilterUtility {
             public void onClick(View v) {
                 Context context = v.getContext();
                 Intent filterIntent = new Intent(context , FilterActivity.class);
-                mainActivity.startActivityForResult(filterIntent,PICK_FILTER_REQUEST);
+                listOrMapActivity.startActivityForResult(filterIntent,PICK_FILTER_REQUEST);
             }
         });
     }

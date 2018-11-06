@@ -63,7 +63,7 @@ public class CustomPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public void destroyItem(@NonNull ViewGroup collection, int position, Object view) {
+    public void destroyItem(@NonNull ViewGroup collection, int position, @NonNull Object view) {
         collection.removeView((View) view);
     }
 
@@ -72,7 +72,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         return images.size();
     }
     @Override
-    public boolean isViewFromObject(@NonNull View view, Object object) {
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == object;
     }
 

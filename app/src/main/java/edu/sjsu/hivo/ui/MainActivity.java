@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,13 +37,12 @@ import com.seatgeek.placesautocomplete.model.PlaceDetails;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
-import java.io.IOException;
+
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.adapter.PropertyListAdapter;
@@ -75,7 +72,6 @@ public class MainActivity extends AppCompatActivity  {
     private FilterUtility filterUtility;
     private SortUtility sortUtility;
     private String zipcode="";
-
     static final int PICK_FILTER_REQUEST = 1;  // The request code
     static final int PICK_SORT_REQUEST = 2;  // The request code
     static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
@@ -97,17 +93,17 @@ public class MainActivity extends AppCompatActivity  {
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            getLatLonFromLocation(location);
+                            sendRequestAndprintResponse("/zdata?zipcode="+launchActivityInterface.getLatLonFromLocation(location,getApplicationContext()));
                         }
                     }
                 });
 
         userInput.clearFocus();
         filterUtility = new FilterUtility(this);
-        filterUtility.getFilterData(filterImg,filterText);
+        filterUtility.setFilterListener(filterImg,filterText);
 
         sortUtility = new SortUtility(this);
-        sortUtility.getSortData(sortImg,sortText);
+        sortUtility.setSortListener(sortImg,sortText);
 
         setAutoPlaceComplete();
         moveToMapVew();
@@ -126,24 +122,7 @@ public class MainActivity extends AppCompatActivity  {
 
         setEnterButtonListener();
 
-    }
 
-    private void getLatLonFromLocation(Location location){
-        double currentLat = location.getLatitude();
-        double currentLng = location.getLongitude();
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
-
-        try {
-            List<Address> addresses = geocoder.getFromLocation(currentLat, currentLng, 1);
-
-            zipcode = addresses.get(0).getPostalCode();
-            sendRequestAndprintResponse("/zdata?zipcode="+zipcode);
-
-//            zipcode = addresses.get(0).getPostalCode();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void getXmlReferences(){
@@ -239,7 +218,7 @@ public class MainActivity extends AppCompatActivity  {
                 userInput.getText().clear();
                 userInput.clearFocus();
 
-                extension=launchActivityInterface.checkResponse(response);
+                extension=launchActivityInterface.checkResponse(response,zipcode);
                 sendRequestAndprintResponse(extension);
 
             }
@@ -257,6 +236,7 @@ public class MainActivity extends AppCompatActivity  {
                 sendRequestAndprintResponse("/zdata?zipcode="+zipcode);
             }
         }
+
     }
 
 
@@ -265,7 +245,7 @@ public class MainActivity extends AppCompatActivity  {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case PICK_FILTER_REQUEST:
-                extension = launchActivityInterface.checkResponse(response);
+                extension = launchActivityInterface.checkResponse(response,zipcode);
                 if (resultCode == FilterActivity.RESULT_OK) {
                     extension = filterUtility.applyFilterData(data, extension);
                     sendRequestAndprintResponse(extension);

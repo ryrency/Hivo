@@ -1,22 +1,20 @@
 package edu.sjsu.hivo.ui;
 
-import android.util.Log;
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 
-import com.seatgeek.placesautocomplete.DetailsCallback;
-import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
-import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
-import com.seatgeek.placesautocomplete.model.Place;
-import com.seatgeek.placesautocomplete.model.PlaceDetails;
-
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
+import java.util.Locale;
 
 public class LaunchActivityImpl implements LaunchActivityInterface {
 
-    String extension ="";
-
-
-    public String checkResponse(String response){
+    public String checkResponse(String response,String zipcode){
+        String extension ="";
         if (!response.equals("")) {
             if (response.matches("[0-9]+")) {
 
@@ -31,7 +29,25 @@ public class LaunchActivityImpl implements LaunchActivityInterface {
             }
         }
         else
-            extension="/zdata?zipcode=95126";
+            extension="/zdata?zipcode="+zipcode;
         return extension;
+    }
+
+    public String getLatLonFromLocation(Location location,Context context){
+        double currentLat = location.getLatitude();
+        double currentLng = location.getLongitude();
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        String zipcode="";
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(currentLat, currentLng, 1);
+
+            zipcode = addresses.get(0).getPostalCode();
+//            zipcode = addresses.get(0).getPostalCode();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return zipcode;
+
     }
 }

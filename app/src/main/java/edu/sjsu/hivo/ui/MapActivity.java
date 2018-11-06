@@ -7,19 +7,21 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Image;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import edu.sjsu.hivo.events.DetailActivityData;
-import edu.sjsu.hivo.events.MapScreenData;
 import edu.sjsu.hivo.model.Property;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -27,6 +29,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -36,14 +40,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.ui.IconGenerator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -53,6 +56,7 @@ import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.networking.VolleyNetwork;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
 import edu.sjsu.hivo.ui.utility.FilterUtility;
+import edu.sjsu.hivo.ui.utility.SortUtility;
 
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback,
@@ -73,12 +77,18 @@ public class MapActivity extends AppCompatActivity implements
     private EditText userInput;
     private ImageView enter;
     private String response;
-    private ImageView filterImg;
-    private TextView filterText;
+    private ImageView filterImg,sortImg;
+    private TextView filterText,sortText;
+    private ImageView enterButton;
+    private FilterUtility filterUtility;
+    private SortUtility sortUtility;
     private String extension;
-    static final int PICK_FILTER_REQUEST = 2;  // The request code
+    String zipcode="95126";
+    static final int PICK_SORT_REQUEST = 2;  // The request code
+    static final int PICK_FILTER_REQUEST = 1;  // The request code
     LaunchActivityInterface launchActivityInterface;
-    FilterUtility filterUtility;
+    private FusedLocationProviderClient mFusedLocationClient;
+
 
 
 
@@ -88,19 +98,39 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkPermission();
         setContentView(R.layout.map_property_listing);
+        checkPermission();
+
+        launchActivityInterface = new LaunchActivityImpl();
+
         mapTextView = (TextView)findViewById(R.id.list_map_tv);
         mapImageView = (ImageView)findViewById(R.id.list_map_iv);
         userInput = (EditText)findViewById(R.id.enter_location);
-        enter = (ImageView)findViewById(R.id.user_icon);
         filterImg = (ImageView)findViewById(R.id.list_filter_iv);
         filterText = (TextView)findViewById(R.id.list_filter_tv);
-        launchActivityInterface = new LaunchActivityImpl();
+        enterButton =  findViewById(R.id.enter_button);
 
+        sortImg = findViewById(R.id.list_sort_iv);
+        sortText = findViewById(R.id.list_sort_tv);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            zipcode = launchActivityInterface.getLatLonFromLocation(location,getApplicationContext());
+                            sendRequestAndprintResponse("/zdata?zipcode="+zipcode);
+                        }
+                    }
+                });
 
         filterUtility = new FilterUtility(this);
-        filterUtility.getFilterData(filterImg,filterText);
+        filterUtility.setFilterListener(filterImg,filterText);
+
+        sortUtility = new SortUtility(this);
+        sortUtility.setSortListener(sortImg,sortText);
 
         moveToListVew();
         iconGen = new IconGenerator(this);
@@ -110,6 +140,9 @@ public class MapActivity extends AppCompatActivity implements
             mapFragment.onResume();
             mapFragment.getMapAsync(this);
         }
+
+        setEnterButtonListener();
+
     }
 
     @Override
@@ -122,6 +155,20 @@ public class MapActivity extends AppCompatActivity implements
         googleMap.setOnCameraIdleListener(this);
     }
 
+    private void setEnterButtonListener(){
+        enterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                response = userInput.getText().toString();
+                userInput.getText().clear();
+                userInput.clearFocus();
+
+                extension=launchActivityInterface.checkResponse(response,zipcode);
+                sendRequestAndprintResponse(extension);
+
+            }
+        });
+    }
     private void updateMap() {
         Log.i(TAG,"inside updateMap()" );
         if (googleMap == null) return;
@@ -275,14 +322,18 @@ public class MapActivity extends AppCompatActivity implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case PICK_FILTER_REQUEST: {
-                extension = launchActivityInterface.checkResponse(response);
+            case PICK_FILTER_REQUEST:
+                extension=launchActivityInterface.checkResponse(response,zipcode);
                 if (resultCode == FilterActivity.RESULT_OK) {
-                    extension = filterUtility.applyFilterData(data, extension);
+                    extension = filterUtility.applyFilterData(data,extension);
                     sendRequestAndprintResponse(extension);
-                }
                 break;
             }
+            case PICK_SORT_REQUEST:
+                super.onActivityResult(requestCode, resultCode, data);
+                if (resultCode == SortActivity.RESULT_OK) {
+                    Toast.makeText(getApplicationContext(), "SORT OPTION SELECTED" + sortUtility.applySortData(data, extension), Toast.LENGTH_LONG).show();
+                }
         }
     }
 

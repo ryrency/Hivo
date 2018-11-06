@@ -1,7 +1,10 @@
 package edu.sjsu.hivo.ui;
 
-import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
+
+import android.content.Context;
+import android.location.Location;
 
 public interface LaunchActivityInterface {
-     public  String checkResponse(String response);
+    String checkResponse(String response,String zipcode);
+    String getLatLonFromLocation(Location location,Context context);
 }
