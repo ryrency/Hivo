@@ -3,6 +3,7 @@ package edu.sjsu.hivo.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -79,6 +81,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private TextView propertyBedNoTv;
         private TextView propertyBathNoTv;
         private TextView propertySqftNoTv;
+        private ImageView favIv;
 
 
         MyViewHolder(View itemView){
@@ -90,6 +93,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             propertyBedNoTv = itemView.findViewById(R.id.property_bed_no_tv);
             propertyBathNoTv = itemView.findViewById(R.id.property_baths_no_tv);
             propertySqftNoTv = itemView.findViewById(R.id.property_sqft_no_tv);
+            favIv = itemView.findViewById(R.id.favourite_iv);
 
         }
 
@@ -113,6 +117,20 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     context.startActivity(intent);
                 }
             });
+
+            favIv.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    if (favIv.getDrawable().getConstantState() == context.getResources().getDrawable( R.drawable.fav_unfilled).getConstantState()) {
+                        favIv.setImageResource(R.drawable.fav_filled);
+                        Toast.makeText(context,"proprty price"+property.getPrice(), Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        favIv.setImageResource(R.drawable.fav_unfilled);
+                    }
+                }
+            });
+
 
 
         }
