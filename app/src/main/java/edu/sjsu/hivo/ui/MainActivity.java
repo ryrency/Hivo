@@ -123,6 +123,16 @@ public class MainActivity extends AppCompatActivity  {
 
         setEnterButtonListener();
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (!recyclerView.canScrollVertically(1)) {
+                    Log.d(TAG, "end of list reached in recycler view, may be load more from server.");
+                    sendRequestAndprintResponse("/zdata?zipcode="+zipcode+"&skip="+propertyList.size());
+                }
+            }
+        });
+
 
     }
 
@@ -278,15 +288,22 @@ public class MainActivity extends AppCompatActivity  {
                             Log.d(TAG, "response is:" + response.toString());
                             Type listType = new TypeToken<ArrayList<Property>>(){}.getType();
                             List<Property> list = new Gson().fromJson(response.toString(), listType);
-                            propertyList.clear();
-                            propertyList.addAll(list);
 
-                            if (propertyList.size() > 1) {
+
+
+                            if (propertyList.size() == 0 && list.size() > 1) {
+                                propertyList.clear();
+                                propertyList.addAll(list);
                                 adapter.notifyDataSetChanged();
                                 recyclerView.scrollToPosition(0);
                             }
-                            else if (propertyList.size() ==  1){
-                                Log.d("RENCY", "Into size==1");
+                            else if (propertyList.size() > 14) {
+                                propertyList.addAll(list);
+                                adapter.notifyDataSetChanged();
+                            }
+                            else if (list.size() ==  1){
+                                propertyList.clear();
+                                propertyList.addAll(list);
                                 DetailActivityData detailActivityData = new DetailActivityData(propertyList.get(0));
                                 EventBus.getDefault().postSticky(detailActivityData);
                                 Intent intent = new Intent(context, PropertyDetail.class);
@@ -294,9 +311,11 @@ public class MainActivity extends AppCompatActivity  {
 
                                 context.startActivity(intent);
                             }
-                            else{
-                                Toast.makeText(getApplicationContext(), "No Properties Found", Toast.LENGTH_LONG).show();
 
+                            if (propertyList.size() == 0)
+                                Toast.makeText(getApplicationContext(), "No Properties Found "+propertyList.size(), Toast.LENGTH_LONG).show();
+                            else if (list.size() == 0)
+                                Toast.makeText(getApplicationContext(), "No More Properties Found "+propertyList.size(), Toast.LENGTH_LONG).show();
                             }
                         }
                     },
