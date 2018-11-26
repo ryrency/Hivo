@@ -7,15 +7,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.Image;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -120,7 +117,7 @@ public class MapActivity extends AppCompatActivity implements
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            zipcode = launchActivityInterface.getLatLonFromLocation(location,getApplicationContext());
+                            zipcode = launchActivityInterface.getZipcodeFromLocation(location,getApplicationContext());
                             sendRequestAndprintResponse("/zdata?zipcode="+zipcode);
                         }
                     }
@@ -332,7 +329,7 @@ public class MapActivity extends AppCompatActivity implements
             case PICK_SORT_REQUEST:
                 super.onActivityResult(requestCode, resultCode, data);
                 if (resultCode == SortActivity.RESULT_OK) {
-                    Toast.makeText(getApplicationContext(), "SORT OPTION SELECTED" + sortUtility.applySortData(data, extension), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "SORT OPTION SELECTED" + extension+sortUtility.applySortData(data), Toast.LENGTH_LONG).show();
                 }
         }
     }
