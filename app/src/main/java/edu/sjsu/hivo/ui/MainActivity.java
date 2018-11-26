@@ -93,7 +93,8 @@ public class MainActivity extends AppCompatActivity  {
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            sendRequestAndprintResponse("/zdata?zipcode="+launchActivityInterface.getLatLonFromLocation(location,getApplicationContext()));
+                            zipcode = launchActivityInterface.getZipcodeFromLocation(location,getApplicationContext());
+                            sendRequestAndprintResponse("/zdata?zipcode="+zipcode+"&skip=0");
                         }
                     }
                 });
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity  {
                                 } catch (UnsupportedEncodingException e) {
                                     e.printStackTrace();
                                 }
-                                extension = "/data?str="+address;
+                                extension = "/data?str="+address+"&skip=0";
                                 sendRequestAndprintResponse(extension);
                                 userInput.clearFocus();
                             }
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity  {
                 userInput.getText().clear();
                 userInput.clearFocus();
 
-                extension=launchActivityInterface.checkResponse(response,zipcode);
+                extension = launchActivityInterface.checkResponse(response, zipcode);
                 sendRequestAndprintResponse(extension);
 
             }
@@ -233,7 +234,7 @@ public class MainActivity extends AppCompatActivity  {
                 adapter.notifyDataSetChanged();
             }
             else {
-                sendRequestAndprintResponse("/zdata?zipcode="+zipcode);
+                sendRequestAndprintResponse("/zdata?zipcode="+zipcode+"&skip=0");
             }
         }
 
@@ -245,18 +246,20 @@ public class MainActivity extends AppCompatActivity  {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case PICK_FILTER_REQUEST:
-                extension = launchActivityInterface.checkResponse(response,zipcode);
+                Log.d(TAG,"zipcode = "+zipcode);
                 if (resultCode == FilterActivity.RESULT_OK) {
-                    extension = filterUtility.applyFilterData(data, extension);
+                    extension = launchActivityInterface.checkResponse(response,zipcode);
+                    extension = filterUtility.applyFilterData(data, extension);//check if can be done better
                     sendRequestAndprintResponse(extension);
-
                     break;
 
                 }
             case PICK_SORT_REQUEST:
                 super.onActivityResult(requestCode, resultCode, data);
                 if (resultCode == SortActivity.RESULT_OK) {
-                    Toast.makeText(getApplicationContext(), "SORT OPTION SELECTED" + sortUtility.applySortData(data, extension), Toast.LENGTH_LONG).show();
+                    extension = launchActivityInterface.checkResponse(response,zipcode);
+                    extension +=  sortUtility.applySortData(data);
+                    sendRequestAndprintResponse(extension);
                 }
         }
 

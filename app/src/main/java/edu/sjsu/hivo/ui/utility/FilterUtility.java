@@ -79,6 +79,7 @@ public class FilterUtility {
                 extension += "&baths=" + noOfBaths + "&baths_op=eq";
             }
 
+            extension+="&skip=0";
             Log.d("TEST","Extension"+extension);
             Log.i("**TAG*************",maxPrice+" "+minPrice+" "+maxSqft+" "+ minSqft+" "+noOfBeds+" "+noOfBaths);
             return extension;

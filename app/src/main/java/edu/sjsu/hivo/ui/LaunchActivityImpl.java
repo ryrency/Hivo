@@ -18,22 +18,22 @@ public class LaunchActivityImpl implements LaunchActivityInterface {
         if (!response.equals("")) {
             if (response.matches("[0-9]+")) {
 
-                extension = "/zdata?zipcode=" + response;
+                extension = "/zdata?zipcode=" + response+"&skip=0";
             } else {
                 try {
                     response = URLEncoder.encode(response, "UTF-8");
-                    extension = "/data?str=" + response;
+                    extension = "/data?str=" + response+"&skip=0";
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
         }
         else
-            extension="/zdata?zipcode="+zipcode;
+            extension="/zdata?zipcode="+zipcode+"&skip=0";
         return extension;
     }
 
-    public String getLatLonFromLocation(Location location,Context context){
+    public String getZipcodeFromLocation(Location location, Context context){
         double currentLat = location.getLatitude();
         double currentLng = location.getLongitude();
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());

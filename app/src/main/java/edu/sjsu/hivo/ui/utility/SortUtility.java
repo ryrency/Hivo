@@ -3,6 +3,7 @@ package edu.sjsu.hivo.ui.utility;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,18 +17,18 @@ public class SortUtility {
 
     private Activity listOrMapActivity;
 
-    public SortUtility(Activity activity){
+    public SortUtility(Activity activity) {
         listOrMapActivity = activity;
     }
 
     public void setSortListener(ImageView sortImg,
-                                TextView sortText){
+                                TextView sortText) {
         sortImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-                Intent sortIntent = new Intent(context , SortActivity.class);
-                listOrMapActivity.startActivityForResult(sortIntent,PICK_SORT_REQUEST);
+                Intent sortIntent = new Intent(context, SortActivity.class);
+                listOrMapActivity.startActivityForResult(sortIntent, PICK_SORT_REQUEST);
             }
         });
 
@@ -35,19 +36,18 @@ public class SortUtility {
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-                Intent filterIntent = new Intent(context , SortActivity.class);
-                listOrMapActivity.startActivityForResult(filterIntent,PICK_SORT_REQUEST);
+                Intent filterIntent = new Intent(context, SortActivity.class);
+                listOrMapActivity.startActivityForResult(filterIntent, PICK_SORT_REQUEST);
             }
         });
     }
 
 
-    public String applySortData(Intent data, String extension){
+    public String applySortData(Intent data) {
 
-        String sortOptionSelected = data.getStringExtra("SORT_OPTION");
-
-        return sortOptionSelected;
+        String extension = "&sortv=" + data.getStringExtra("SORT_OPTION") + "&sort_by=" + 1;
+        extension+="&skip=0";
+        return extension;
 
     }
-
 }

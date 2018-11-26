@@ -3,6 +3,7 @@ package edu.sjsu.hivo.ui;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -20,8 +21,8 @@ public class SortActivity extends AppCompatActivity {
 
 
 
-        private String[] sortOptions = {"Price","Beds","Baths","Square Feet"};
-        int selectedItem = Integer.MIN_VALUE;
+        private String[] sortOptions = {"price","beds","baths","sqft"};
+        int selectedItem = Integer.MIN_VALUE, sortOrder=1;
         String sortOptionSelected ="";
 
     ListView lvCheckBox;
@@ -29,7 +30,7 @@ public class SortActivity extends AppCompatActivity {
     @Override
         public void onCreate(Bundle savedInstanceState)
         {
-            TextView btnSortOrder;
+            final TextView btnSortOrder;
             Button applySort;
 
             super.onCreate(savedInstanceState);
@@ -50,7 +51,14 @@ public class SortActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View arg0)
                 {
-
+                    if (btnSortOrder.getText().toString().equals("Low-High")) {
+                        sortOrder = -1;
+                        btnSortOrder.setText("High-Low");
+                    }
+                    else{
+                        sortOrder= 1;
+                        btnSortOrder.setText("Low-High");
+                    }
                 }
             });
 
@@ -82,6 +90,7 @@ public class SortActivity extends AppCompatActivity {
                         else {
                             Intent resultIntent = new Intent();
                             resultIntent.putExtra("SORT_OPTION", sortOptions[selectedItem]);
+                            resultIntent.putExtra("SORT_ORDER",sortOrder);
                             setResult(FilterActivity.RESULT_OK, resultIntent);
                             finish();
                         }
