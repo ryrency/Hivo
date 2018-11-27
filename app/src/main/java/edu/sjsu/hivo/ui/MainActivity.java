@@ -245,7 +245,8 @@ public class MainActivity extends AppCompatActivity  {
                 adapter.notifyDataSetChanged();
             }
             else {
-                sendRequestAndprintResponse("/zdata?zipcode="+zipcode,0);
+                extension="/zdata?zipcode="+zipcode;
+                sendRequestAndprintResponse(extension,0);
             }
         }
 
@@ -290,7 +291,6 @@ public class MainActivity extends AppCompatActivity  {
                             Type listType = new TypeToken<ArrayList<Property>>() {
                             }.getType();
                             List<Property> list = new Gson().fromJson(response.toString(), listType);
-
 
                             if (list.size() > 1 && skipCount==0) {
                                 propertyList.clear();
