@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity  {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
                             zipcode = launchActivityInterface.getZipcodeFromLocation(location,getApplicationContext());
-                            sendRequestAndprintResponse("/zdata?zipcode="+zipcode+"&skip=0");
+                            extension = "/zdata?zipcode="+zipcode;
+                            sendRequestAndprintResponse(extension,0);
                         }
                     }
                 });
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity  {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (!recyclerView.canScrollVertically(1)) {
                     Log.d(TAG, "end of list reached in recycler view, may be load more from server.");
-                    sendRequestAndprintResponse("/zdata?zipcode="+zipcode+"&skip="+propertyList.size());
+                    sendRequestAndprintResponse(extension,propertyList.size());
                 }
             }
         });
@@ -180,8 +181,8 @@ public class MainActivity extends AppCompatActivity  {
                                 } catch (UnsupportedEncodingException e) {
                                     e.printStackTrace();
                                 }
-                                extension = "/data?str="+address+"&skip=0";
-                                sendRequestAndprintResponse(extension);
+                                extension = "/data?str="+address;
+                                sendRequestAndprintResponse(extension,0);
                                 userInput.clearFocus();
                             }
 
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity  {
                 userInput.clearFocus();
 
                 extension = launchActivityInterface.checkResponse(response, zipcode);
-                sendRequestAndprintResponse(extension);
+                sendRequestAndprintResponse(extension,0);
 
             }
         });
@@ -244,7 +245,7 @@ public class MainActivity extends AppCompatActivity  {
                 adapter.notifyDataSetChanged();
             }
             else {
-                sendRequestAndprintResponse("/zdata?zipcode="+zipcode+"&skip=0");
+                sendRequestAndprintResponse("/zdata?zipcode="+zipcode,0);
             }
         }
 
@@ -260,7 +261,7 @@ public class MainActivity extends AppCompatActivity  {
                 if (resultCode == FilterActivity.RESULT_OK) {
                     extension = launchActivityInterface.checkResponse(response,zipcode);
                     extension = filterUtility.applyFilterData(data, extension);//check if can be done better
-                    sendRequestAndprintResponse(extension);
+                    sendRequestAndprintResponse(extension,0);
                     break;
 
                 }
@@ -269,39 +270,37 @@ public class MainActivity extends AppCompatActivity  {
                 if (resultCode == SortActivity.RESULT_OK) {
                     extension = launchActivityInterface.checkResponse(response,zipcode);
                     extension +=  sortUtility.applySortData(data);
-                    sendRequestAndprintResponse(extension);
+                    sendRequestAndprintResponse(extension,0);
                 }
         }
 
     }
-    public void sendRequestAndprintResponse(final String extension) {
+    public void sendRequestAndprintResponse(final String extension, final int skipCount) {
         checkPermission();
         hideKeyboard(this);
         Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + extension);
         try {
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
-                    VolleyNetwork.AWS_ENDPOINT + extension,
+                    VolleyNetwork.AWS_ENDPOINT + extension+"&skip="+skipCount,
                     null,
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response) {
                             Log.d(TAG, "response is:" + response.toString());
-                            Type listType = new TypeToken<ArrayList<Property>>(){}.getType();
+                            Type listType = new TypeToken<ArrayList<Property>>() {
+                            }.getType();
                             List<Property> list = new Gson().fromJson(response.toString(), listType);
 
 
-
-                            if (propertyList.size() == 0 && list.size() > 1) {
+                            if (list.size() > 1 && skipCount==0) {
                                 propertyList.clear();
                                 propertyList.addAll(list);
                                 adapter.notifyDataSetChanged();
                                 recyclerView.scrollToPosition(0);
-                            }
-                            else if (propertyList.size() > 14) {
+                            } else if (propertyList.size() > 14) {
                                 propertyList.addAll(list);
                                 adapter.notifyDataSetChanged();
-                            }
-                            else if (list.size() ==  1){
+                            } else if (list.size() == 1) {
                                 propertyList.clear();
                                 propertyList.addAll(list);
                                 DetailActivityData detailActivityData = new DetailActivityData(propertyList.get(0));
@@ -313,10 +312,9 @@ public class MainActivity extends AppCompatActivity  {
                             }
 
                             if (propertyList.size() == 0)
-                                Toast.makeText(getApplicationContext(), "No Properties Found "+propertyList.size(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "No Properties Found " + propertyList.size(), Toast.LENGTH_LONG).show();
                             else if (list.size() == 0)
-                                Toast.makeText(getApplicationContext(), "No More Properties Found "+propertyList.size(), Toast.LENGTH_LONG).show();
-                            }
+                                Toast.makeText(getApplicationContext(), "No More Properties Found " + propertyList.size(), Toast.LENGTH_LONG).show();
                         }
                     },
                     new Response.ErrorListener() {
