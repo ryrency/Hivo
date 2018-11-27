@@ -18,18 +18,18 @@ public class LaunchActivityImpl implements LaunchActivityInterface {
         if (!response.equals("")) {
             if (response.matches("[0-9]+")) {
 
-                extension = "/zdata?zipcode=" + response+"&skip=0";
+                extension = "/zdata?zipcode=" + response;
             } else {
                 try {
                     response = URLEncoder.encode(response, "UTF-8");
-                    extension = "/data?str=" + response+"&skip=0";
+                    extension = "/data?str=" + response;
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
         }
         else
-            extension="/zdata?zipcode="+zipcode+"&skip=0";
+            extension="/zdata?zipcode="+zipcode;
         return extension;
     }
 
