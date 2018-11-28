@@ -217,8 +217,6 @@ public class MainActivity extends AppCompatActivity  {
 
             }
         });
-
-
     }
 
 
@@ -240,7 +238,7 @@ public class MainActivity extends AppCompatActivity  {
     private void checkSavedInstance(Bundle savedInstanceState){
         if (savedInstanceState != null) {
             MainActivityData data = EventBus.getDefault().getStickyEvent(MainActivityData.class);
-            if (data.getProperties() != null) {
+            if (data.getProperties() != null || data==null) {
                 propertyList.addAll(data.getProperties());
                 adapter.notifyDataSetChanged();
             }
@@ -251,7 +249,6 @@ public class MainActivity extends AppCompatActivity  {
         }
 
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -274,12 +271,12 @@ public class MainActivity extends AppCompatActivity  {
                     sendRequestAndprintResponse(extension,0);
                 }
         }
-
     }
+
     public void sendRequestAndprintResponse(final String extension, final int skipCount) {
         checkPermission();
         hideKeyboard(this);
-        Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + extension);
+        Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + extension+"&skip=**");
         try {
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
@@ -291,24 +288,26 @@ public class MainActivity extends AppCompatActivity  {
                             Type listType = new TypeToken<ArrayList<Property>>() {
                             }.getType();
                             List<Property> list = new Gson().fromJson(response.toString(), listType);
+                            Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + extension+"&skip="+skipCount);
 
-                            if (list.size() > 1 && skipCount==0) {
-                                propertyList.clear();
-                                propertyList.addAll(list);
-                                adapter.notifyDataSetChanged();
-                                recyclerView.scrollToPosition(0);
-                            } else if (propertyList.size() > 14) {
-                                propertyList.addAll(list);
-                                adapter.notifyDataSetChanged();
-                            } else if (list.size() == 1) {
+                             if (list.size() == 1) {
                                 propertyList.clear();
                                 propertyList.addAll(list);
                                 DetailActivityData detailActivityData = new DetailActivityData(propertyList.get(0));
                                 EventBus.getDefault().postSticky(detailActivityData);
                                 Intent intent = new Intent(context, PropertyDetail.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
                                 context.startActivity(intent);
+                            }
+                            else if (list.size() > 1 && skipCount==0) {
+                                propertyList.clear();
+                                propertyList.addAll(list);
+                                adapter.notifyDataSetChanged();
+                                recyclerView.scrollToPosition(0);
+                            }
+                            else if (propertyList.size() > 14) {
+                                propertyList.addAll(list);
+                                adapter.notifyDataSetChanged();
                             }
 
                             if (propertyList.size() == 0)
