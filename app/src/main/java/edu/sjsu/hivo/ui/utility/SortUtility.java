@@ -45,7 +45,8 @@ public class SortUtility {
 
     public String applySortData(Intent data) {
 
-        String extension = "&sortv=" + data.getStringExtra("SORT_OPTION") + "&sort_by=" + 1;
+
+        String extension = "&sortv=" + data.getStringExtra("SORT_OPTION") + "&sort_by=" + data.getStringExtra("SORT_ORDER");
         return extension;
 
     }
