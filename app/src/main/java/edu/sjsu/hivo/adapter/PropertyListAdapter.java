@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,11 +24,13 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.events.DetailActivityData;
 import edu.sjsu.hivo.model.Property;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
+
 //import edu.sjsu.hivo.model.PropertyList;
 //import edu.sjsu.hivo.ui.MainActivity;
 //import edu.sjsu.hivo.ui.PropertyDetail;
@@ -38,7 +41,9 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final LayoutInflater layoutInflater;
     private final List<Property> propertyList;
     private final Context context;
+    private Property response;
     private String TAG = PropertyListAdapter.class.getSimpleName();
+    public static final String AWS_ENDPOINT = "https://project-realestate.herokuapp.com/property_image?image_url=";
 
     public PropertyListAdapter(List<Property> propertyList, Context context){
         this.propertyList = propertyList;
@@ -63,7 +68,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         MyViewHolder vh1 = (MyViewHolder)holder;
         Log.i(TAG,"INTO create bindholder "+propertyList.size());
-        Property response = propertyList.get(position);
+        response = propertyList.get(position);
         vh1.bindData(response);
     }
 
@@ -99,7 +104,9 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         void bindData(final Property property) {
             Log.i(TAG,"in bindData "+propertyList.size());
-            Glide.with(context).load(property.getUrls().get(1)).into(propertyIv);
+            String getUrl = randomizeImages();
+            Log.i(TAG, "random url is: "+getUrl);
+            Glide.with(context).load(getUrl).into(propertyIv);
             propertyPriceTv.setText(property.getPrice());
             propertyAddressLine1Tv.setText(property.getAddress());
             propertyAddressLine2Tv.setText(property.getAddress2());
@@ -123,7 +130,6 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 public void onClick(View v) {
                     if (favIv.getDrawable().getConstantState() == context.getResources().getDrawable( R.drawable.fav_unfilled).getConstantState()) {
                         favIv.setImageResource(R.drawable.fav_filled);
-                        Toast.makeText(context,"proprty price"+property.getPrice(), Toast.LENGTH_LONG).show();
                     }
                     else{
                         favIv.setImageResource(R.drawable.fav_unfilled);
@@ -133,6 +139,30 @@ public class PropertyListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
 
+        }
+        private String randomizeImages(){
+
+            if(response.getPropertyType().equals("Townhouse")){
+                return randomFunction(Property.getTownHouseUrls());
+
+            }
+
+            else if(response.getPropertyType().equals("Condo/Co-op")){
+                return randomFunction(Property.getCondoUrls());
+
+            }
+
+            else{
+                return randomFunction(Property.getSingleFamilyUrls());
+            }
+
+
+        }
+
+        private String randomFunction(List<String> list){
+            Random random = new Random();
+            int randomIndex = random.nextInt(list.size());
+            return list.get(randomIndex);
         }
 
 

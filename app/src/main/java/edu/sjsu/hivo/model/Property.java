@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /* Property model, deserialized by Gson. */
@@ -61,7 +62,13 @@ public class Property {
     @SerializedName("BOUNDARY")
     private Boundary boundary;
 
+    @SerializedName("image_url")
     private List<String> urls;
+
+    private static List<String> townHouseUrls;
+    private static List<String> condoUrls;
+    private static List<String> singleFamilyUrls;
+
 
     public Property() {
 
@@ -227,17 +234,78 @@ public class Property {
 
     // Dummy images for now
     public List<String> getUrls() {
-        if (urls == null) {
-            urls = new ArrayList<>();
-            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_5.jpg");
-            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_1_5.jpg");
-            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_2_5.jpg");
-            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_3_5.jpg");
-            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_4_5.jpg");
-            urls.add("https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/772/genMid.40834772_5_5.jpg");
-        }
-
         return urls;
+    }
+
+    public static List<String> getTownHouseUrls() {
+
+        if (townHouseUrls == null) {
+            townHouseUrls = new ArrayList<>();
+            Collections.addAll(townHouseUrls, "https://ssl.cdn-redfin.com/photo/8/bigphoto/235/ML81715235_1.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/649/ML81728649_5.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/447/ML81730447_0.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/555/ML81730555_3.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/087/ML81731087_1.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/739/ML81726739_6.jpg",
+                    "https://ssl.cdn-redfin.com/photo/216/bigphoto/503/Plan-437503_0.jpg",
+                    "https://ssl.cdn-redfin.com/photo/216/bigphoto/078/Plan-463078_0.jpg");
+
+        }
+        return townHouseUrls;
+    }
+
+    public static List<String> getCondoUrls() {
+
+        if (condoUrls == null) {
+            condoUrls = new ArrayList<>();
+            Collections.addAll(condoUrls, "https://ssl.cdn-redfin.com/photo/8/bigphoto/078/ML81726078_C.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/515/ML81721515_3_4.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/902/ML81729902_6.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/357/ML81731357_1.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/406/ML81725406_6.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/763/ML81729763_2.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/166/ML81723166_6.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/345/ML81726345_8.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/504/ML81724504_2.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/548/ML81730548_4.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/254/ML81728254_2.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/893/ML81727893_5.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/747/ML81714747_B.jpg",
+            "https://ssl.cdn-redfin.com/system_files/media/228107_JPG/item_1.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/959/ML81731959_0.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/867/ML81729867_4.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/010/ML81732010_1.jpg",
+            "https://ssl.cdn-redfin.com/photo/8/bigphoto/308/ML81731308_3.jpg");
+        }
+        return condoUrls;
+    }
+
+    public static List<String> getSingleFamilyUrls() {
+
+        if (singleFamilyUrls == null) {
+            singleFamilyUrls = new ArrayList<>();
+            Collections.addAll(singleFamilyUrls, "https://ssl.cdn-redfin.com/photo/8/bigphoto/901/ML81729901_3.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/718/ML81731718_0.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/392/ML81731392_0.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/mbpaddedwide/677/genMid.ML81726677_H.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/mbpaddedwide/076/genMid.ML81732076_0.jpg",
+                    "https://ssl.cdn-redfin.com/photo/10/mbpaddedwide/701/genMid.40842701_4.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/348/ML81727348_8.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/205/ML81731205_8.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/131/ML81731131_2.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/845/ML81719845_9.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/121/ML81731121_2.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/772/ML81729772_1.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/772/ML81729772_1.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/479/ML81723479_0.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/821/ML81731821_0.jpg",
+                    "https://ssl.cdn-redfin.com/photo/8/bigphoto/568/ML81731568_0.jpg");
+        }
+        return singleFamilyUrls;
+    }
+
+    public void setUrls(List<String> urls){
+        this.urls = urls;
     }
 
     private static class Boundary {

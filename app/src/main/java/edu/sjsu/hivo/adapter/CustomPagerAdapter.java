@@ -33,9 +33,10 @@ public class CustomPagerAdapter extends PagerAdapter {
         layout = (ViewGroup) inflater.inflate(R.layout.detail_images, container,false);
 
         final ImageView detailIv = layout.findViewById(R.id.detail_images_iv);
-        RequestOptions options = new RequestOptions();
-        options = options.centerCrop();
-        Glide.with(mContext).load(images.get(position)).apply(options).into(detailIv);
+        //RequestOptions options = new RequestOptions();
+        //options = options.centerCrop();
+        String url = "https://project-realestate.herokuapp.com/property_image?image_url="+images.get(position);
+        Glide.with(mContext).load(url).into(detailIv);
 
         final int finalPosition = position;
         if (mContext instanceof PropertyDetail) {
