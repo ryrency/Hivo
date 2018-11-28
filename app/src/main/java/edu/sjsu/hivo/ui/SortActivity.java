@@ -92,7 +92,6 @@ public class SortActivity extends AppCompatActivity {
                             Intent resultIntent = new Intent();
                             resultIntent.putExtra("SORT_OPTION", sortOptions[selectedItem]);
                             resultIntent.putExtra("SORT_ORDER",sortOrder);
-                            Log.d("RENCY","sortOrder : "+sortOrder);
                             setResult(FilterActivity.RESULT_OK, resultIntent);
                             finish();
                         }
