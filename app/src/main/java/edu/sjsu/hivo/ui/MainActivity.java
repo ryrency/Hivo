@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity  {
     private String response="";
     private PlacesAutocompleteTextView userInput;
     private LaunchActivityInterface launchActivityInterface;
-    private String userText,extension;
+    private String userText,extension,filterExtension,sortExtension;
     private ImageView filterImg,sortImg;
     private TextView filterText,sortText;
     private Context context;
@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity  {
                         if (location != null) {
                             zipcode = launchActivityInterface.getZipcodeFromLocation(location,getApplicationContext());
                             extension = "/zdata?zipcode="+zipcode;
+                            filterExtension="";
+                            sortExtension="";
                             sendRequestAndprintResponse(extension,0);
                         }
                     }
@@ -257,8 +259,9 @@ public class MainActivity extends AppCompatActivity  {
             case PICK_FILTER_REQUEST:
                 Log.d(TAG,"zipcode = "+zipcode);
                 if (resultCode == FilterActivity.RESULT_OK) {
-                    extension = launchActivityInterface.checkResponse(response,zipcode);
-                    extension = filterUtility.applyFilterData(data, extension);//check if can be done better
+                    filterExtension="";
+//                    extension = launchActivityInterface.checkResponse(response,zipcode);
+                    filterExtension = filterUtility.applyFilterData(data);
                     sendRequestAndprintResponse(extension,0);
                     break;
 
@@ -266,8 +269,10 @@ public class MainActivity extends AppCompatActivity  {
             case PICK_SORT_REQUEST:
                 super.onActivityResult(requestCode, resultCode, data);
                 if (resultCode == SortActivity.RESULT_OK) {
-                    extension = launchActivityInterface.checkResponse(response,zipcode);
-                    extension +=  sortUtility.applySortData(data);
+                    Log.d("RENCY","EXTENSION BEFORE SORT: "+extension);
+//                    extension = launchActivityInterface.checkResponse(response,zipcode);
+                    sortExtension="";
+                    sortExtension +=  sortUtility.applySortData(data);
                     sendRequestAndprintResponse(extension,0);
                 }
         }
@@ -276,11 +281,11 @@ public class MainActivity extends AppCompatActivity  {
     public void sendRequestAndprintResponse(final String extension, final int skipCount) {
         checkPermission();
         hideKeyboard(this);
-        Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + extension+"&skip=**");
+        Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + extension+"&skip="+skipCount+filterExtension+sortExtension);
         try {
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
-                    VolleyNetwork.AWS_ENDPOINT + extension+"&skip="+skipCount,
+                    VolleyNetwork.AWS_ENDPOINT + extension+"&skip="+skipCount+filterExtension+sortExtension,
                     null,
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response) {
