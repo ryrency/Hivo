@@ -147,8 +147,8 @@ public class MainActivity extends AppCompatActivity  {
         enterButton =  findViewById(R.id.enter_button);
         userInput =  findViewById(R.id.enter_location);
         userText = String.valueOf(userInput.getText());
-        mapTextView = findViewById(R.id.list_map_tv);
-        mapImageView = findViewById(R.id.list_map_iv);
+        mapTextView = (TextView) findViewById(R.id.list_map_tv);
+        mapImageView = (ImageView) findViewById(R.id.list_map_iv);
         launchActivityInterface = new LaunchActivityImpl();
         context = getApplicationContext();
     }

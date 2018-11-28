@@ -80,6 +80,7 @@ public class MapActivity extends AppCompatActivity implements
     private FilterUtility filterUtility;
     private SortUtility sortUtility;
     private String extension;
+    //private Location curLoc;
     String zipcode="95126";
     static final int PICK_SORT_REQUEST = 2;  // The request code
     static final int PICK_FILTER_REQUEST = 1;  // The request code
@@ -116,9 +117,10 @@ public class MapActivity extends AppCompatActivity implements
                     @Override
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            zipcode = launchActivityInterface.getZipcodeFromLocation(location,getApplicationContext());
-                            sendRequestAndprintResponse("/zdata?zipcode="+zipcode);
+                        currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        if (googleMap != null) {
+                            Log.i(TAG, "CurrentLocation is... " +currentLocation);
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12));
                         }
                     }
                 });
@@ -147,9 +149,12 @@ public class MapActivity extends AppCompatActivity implements
         Log.i(TAG,"inside OnMapReady" );
         MapsInitializer.initialize(this);
         this.googleMap = googleMap;
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.3363447,-121.8811573), 12));
         googleMap.setOnMarkerClickListener(this);
         googleMap.setOnCameraIdleListener(this);
+        if (currentLocation != null) {
+            Log.i(TAG,"inside mapReady location is " +currentLocation);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12));
+        }
     }
 
     private void setEnterButtonListener(){
@@ -260,17 +265,19 @@ public class MapActivity extends AppCompatActivity implements
     }
 
     public void sendRequestAndprintResponse(String extension) {
-        Log.d(TAG, "Fetching data");
+        String url = VolleyNetwork.AWS_ENDPOINT+extension;
+        Log.d(TAG, "extension  " + url);
         try{
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
-                    VolleyNetwork.AWS_ENDPOINT+extension,
+                    url,
                     null,
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response){
                             Log.d(TAG,"response is:" + response.toString());
                             Type listType = new TypeToken<ArrayList<Property>>(){}.getType();
                             List<Property> list = new Gson().fromJson(response.toString(), listType);
+                            googleMap.clear();
                             propertyList.clear();
                             propertyList.addAll(list);
                             if (propertyList.size() >  1)
@@ -392,24 +399,16 @@ public class MapActivity extends AppCompatActivity implements
     public void onCameraIdle() {
         currentLocation = googleMap.getCameraPosition().target;
         Log.d(TAG, "map has stopped moving, current location: " + currentLocation);
-        extension = "/cordinate?longitude="+String.valueOf(currentLocation.longitude)+"&latitude="+String.valueOf(currentLocation.latitude);
-        extension = "/zdata?zipcode=95126";
+        extension = "cordinate?longitude="+String.valueOf(currentLocation.longitude)+"&latitude="+String.valueOf(currentLocation.latitude);
         Log.d(TAG,"inside  Camera Idle" +response);
-        enter.setOnClickListener(new View.OnClickListener() {
+        enterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 response = userInput.getText().toString();
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
-                //extension = "/zdata?zipcode="+response;
-                //Log.d(TAG,"On clickinggggggggg   response is" +response);
             }
         });
-        if(response != null){
-            //propertyList.clear();
-            googleMap.clear();
-            extension = "/zdata?zipcode="+response;
-        }
-        //googleMap.clear();
+
         sendRequestAndprintResponse(extension);
     }
 }
