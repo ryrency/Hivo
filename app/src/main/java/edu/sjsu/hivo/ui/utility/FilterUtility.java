@@ -46,42 +46,35 @@ public class FilterUtility {
     public String applyFilterData(Intent data, String extension){
         String  maxPrice, minPrice, maxSqft, minSqft, noOfBeds, noOfBaths;
         maxPrice= data.getStringExtra("MAX_PRICE");
-            if (!maxPrice.equals("") ){
-                extension += "&price=" + maxPrice + "&price_op=lt" +
-                        "";
-                Log.d("TEST","maxPr "+maxPrice);
-            }
+        if (!maxPrice.equals("") ){
+            extension += "&max_price=" + maxPrice;
+        }
+        minPrice = data.getStringExtra("MIN_PRICE");
+        if (!minPrice.equals("")) {
+            extension += "&min_price=" + minPrice;
+        }
+        maxSqft = data.getStringExtra("MAX_SQFT");
+        if (!maxSqft.equals("")) {
+            extension += "&max_sqft=" + maxSqft;
+        }
+        minSqft = data.getStringExtra("MIN_SQFT");
+        if (!minSqft.equals("")) {
+            extension += "&min_sqft=" + minSqft;
+        }
+        noOfBeds = data.getStringExtra("NO_OF_BEDS");
+        if (!noOfBeds.equals("0")) {
+            Log.d("TEST","noOfBeds "+noOfBeds);
+            extension += "&beds=" + noOfBeds + "&beds_op=eq";
+        }
+        noOfBaths = data.getStringExtra("NO_OF_BATHS");
+        if (!noOfBaths.equals("0.0")) {
+            Log.d("TEST","noOfBaths "+noOfBaths);
+            extension += "&baths=" + noOfBaths + "&baths_op=eq";
+        }
 
-            minPrice = data.getStringExtra("MIN_PRICE");
-            if (!minPrice.equals("")) {
-                Log.d("TEST","minPrice "+minPrice);
-                extension += "&price=" + minPrice + "&price_op=gt";
-            }
-            maxSqft = data.getStringExtra("MAX_SQFT");
-            if (!maxSqft.equals("")) {
-                extension += "&sqft=" + maxSqft + "&sqft_op=lt";
-                Log.d("TEST","maxSqft "+maxSqft);
-            }
-            minSqft = data.getStringExtra("MIN_SQFT");
-            if (!minSqft.equals("")) {
-                extension += "&sqft=" + minSqft + "&sqft_op=gt";
-                Log.d("TEST","minqsft "+minSqft);
-
-            }
-            noOfBeds = data.getStringExtra("NO_OF_BEDS");
-            if (!noOfBeds.equals("0")) {
-                Log.d("TEST","noOfBeds "+noOfBeds);
-                extension += "&beds=" + noOfBeds + "&beds_op=eq";
-            }
-            noOfBaths = data.getStringExtra("NO_OF_BATHS");
-            if (!noOfBaths.equals("0.0")) {
-                Log.d("TEST","noOfBaths "+noOfBaths);
-                extension += "&baths=" + noOfBaths + "&baths_op=eq";
-            }
-
-            Log.d("TEST","Extension"+extension);
-            Log.i("**TAG*************",maxPrice+" "+minPrice+" "+maxSqft+" "+ minSqft+" "+noOfBeds+" "+noOfBaths);
-            return extension;
+        Log.d("TEST","Extension"+extension);
+        Log.i("**TAG*************",maxPrice+" "+minPrice+" "+maxSqft+" "+ minSqft+" "+noOfBeds+" "+noOfBaths);
+        return extension;
 
     }
 

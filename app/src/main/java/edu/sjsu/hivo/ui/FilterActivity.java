@@ -251,6 +251,7 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+        int maxRange, minRange;
         Spinner spinner = (Spinner) parent;
         String item = parent.getItemAtPosition(position).toString();
 
@@ -266,7 +267,9 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
                         minPriceRange = minPriceRange.replace("$","");
                         minPriceRange = minPriceRange.trim();
 
-                        if (Integer.parseInt(maxPriceRange) < Integer.parseInt(minPriceRange)) {
+                        maxRange = maxPriceRange.equals("")?Integer.MAX_VALUE:Integer.parseInt(maxPriceRange);
+                        minRange = maxPriceRange.equals("")?Integer.MIN_VALUE:Integer.parseInt(minPriceRange);
+                        if (maxRange < minRange) {
                             Toast.makeText(getApplicationContext(), "Select a value more than " + minPriceRange,
                                     Toast.LENGTH_SHORT).show();
                             maxPriceRange = "";
@@ -285,8 +288,11 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
                         maxPriceRange = maxPriceRange.replace(",","");
                         maxPriceRange = maxPriceRange.replace("$","");
 
+                        maxRange = maxPriceRange.equals("")?Integer.MAX_VALUE:Integer.parseInt(maxPriceRange);
+                        minRange = maxPriceRange.equals("")?Integer.MIN_VALUE:Integer.parseInt(minPriceRange);
                         maxPriceRange = maxPriceRange.trim();
-                        if (Integer.parseInt(maxPriceRange) < Integer.parseInt(minPriceRange)) {
+                        Log.d("TAG","maxPriceRange "+maxPriceRange+" minPriceRange "+minPriceRange);
+                        if (maxRange < minRange) {
                             Toast.makeText(getApplicationContext(), "Select a value less than " + maxPriceRange,
                                     Toast.LENGTH_SHORT).show();
                             maxPriceRange = "";
