@@ -3,6 +3,7 @@ package edu.sjsu.hivo.ui.utility;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -43,9 +44,11 @@ public class SortUtility {
     }
 
 
-    public String applySortData(Intent data) {
-
-        String extension = "&sortv=" + data.getStringExtra("SORT_OPTION") + "&sort_by=" + 1;
+    public static String applySortData(Intent data, String extension) {
+        if (data == null || TextUtils.isEmpty(extension)) {
+            return extension;
+        }
+        extension += "&sortv=" + data.getStringExtra("SORT_OPTION") + "&sort_by=" + 1;
         return extension;
 
     }

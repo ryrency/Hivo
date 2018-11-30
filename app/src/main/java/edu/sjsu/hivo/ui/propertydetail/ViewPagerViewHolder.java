@@ -24,11 +24,15 @@ public class ViewPagerViewHolder extends PropertyViewHolder {
         this.view = view;
         this.context = context;
         viewPager = view.findViewById(R.id.detail_viewpager);
+        adapter = new CustomPagerAdapter(context);
+        viewPager.setAdapter(adapter);
     }
 
     @Override
     public void bindProperty(Property property) {
-        adapter = new CustomPagerAdapter(context, property.getUrls());
-        viewPager.setAdapter(adapter);
+        if (!adapter.hasImages()) {
+            adapter.setImages(property.getUrls());
+            adapter.notifyDataSetChanged();
+        }
     }
 }

@@ -3,6 +3,8 @@ package edu.sjsu.hivo.ui.propertydetail;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.List;
+
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.model.Property;
 
@@ -27,6 +29,7 @@ public class KeyDetailsViewHolder extends PropertyViewHolder {
     private TextView price_per_sq_ft_value_tv;
     private TextView status_tv;
     private TextView status_value_tv;
+    //private TextView estimatedPrice;
 
     public KeyDetailsViewHolder(View view) {
         super(view);
@@ -50,6 +53,7 @@ public class KeyDetailsViewHolder extends PropertyViewHolder {
         price_per_sq_ft_value_tv = (TextView)view.findViewById(R.id.price_per_sq_ft_value);
         status_tv = (TextView)view.findViewById(R.id.status_tv);
         status_value_tv = (TextView)view.findViewById(R.id.status_value);
+       // estimatedPrice = (TextView)view.findViewById(R.id.key_details);
 
 
 
@@ -68,5 +72,9 @@ public class KeyDetailsViewHolder extends PropertyViewHolder {
         property_type_value_tv.setText(property.getPropertyType());
         build_year_value_tv.setText(property.getBuilt());
         status_value_tv.setText(property.getSaleType());
+        price_per_sq_ft_value_tv.setText(property.getPricePerSqFt());
+        if(property.getPredictedPrice() != null){
+            key_details_tv.setText(property.getPredictedPrice());
+        }
     }
 }

@@ -71,10 +71,10 @@ public class MapViewHolder extends PropertyViewHolder implements OnMapReadyCallb
         directions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("geo: " + property.getLatitude()+ ", " + property.getLongitude());
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                context.startActivity(mapIntent);
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?daddr=" + property.getLatitude() + "," + property.getLongitude()));
+                intent.setPackage("com.google.android.apps.maps");
+                context.startActivity(intent);
             }
         });
     }

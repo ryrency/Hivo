@@ -3,6 +3,7 @@ package edu.sjsu.hivo.ui.utility;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -43,7 +44,10 @@ public class FilterUtility {
     }
 
 
-    public String applyFilterData(Intent data, String extension){
+    public static String applyFilterData(Intent data, String extension){
+        if (data == null || TextUtils.isEmpty(extension)) {
+            return extension;
+        }
         String  maxPrice, minPrice, maxSqft, minSqft, noOfBeds, noOfBaths;
         maxPrice= data.getStringExtra("MAX_PRICE");
         if (!maxPrice.equals("") ){

@@ -11,9 +11,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /* Property model, deserialized by Gson. */
 public class Property {
+
+    private static final String AWS_IMAGE_ENDPOINT = "https://project-realestate.herokuapp.com/property_image?image_url=";
 
     @SerializedName("ZIP")
     private String zip;
@@ -65,6 +68,13 @@ public class Property {
     @SerializedName("image_url")
     private List<String> urls;
 
+    @SerializedName("COST_SQUARE_FEET")
+    private String pricePerSqFt;
+
+
+    private String predictedPrice;
+    private String displayUrl;
+
     private static List<String> townHouseUrls;
     private static List<String> condoUrls;
     private static List<String> singleFamilyUrls;
@@ -74,6 +84,20 @@ public class Property {
 
     }
 
+    public String getPredictedPrice(){
+        String price = "Loading...";
+        if (!TextUtils.isEmpty(predictedPrice)) {
+            price = predictedPrice;
+            if (!price.equals("Not Known")) {
+                price = "$" + price;
+            }
+        }
+        return "Estimated price: " + price;
+    }
+
+    public void setPredictedPrice(String predictedPrice){
+        this.predictedPrice = predictedPrice;
+    }
     public String getZip() {
         return zip;
     }
@@ -188,6 +212,14 @@ public class Property {
         this.baths = baths;
     }
 
+    public String getPricePerSqFt(){
+        return pricePerSqFt;
+    }
+
+    public void setPricePerSqFt(String pricePerSqFt){
+        this.pricePerSqFt = pricePerSqFt;
+    }
+
     public String getId() {
         return id;
     }
@@ -234,7 +266,39 @@ public class Property {
 
     // Dummy images for now
     public List<String> getUrls() {
+        if (urls == null || urls.size() <= 0) {
+            urls = getShuffeledClientUrls();
+        }
+        urls = sanitizeUrls();
         return urls;
+    }
+
+    private List<String> getShuffeledClientUrls() {
+        List<String> urls = null;
+
+        if(getPropertyType().equals("Townhouse")){
+            urls = getTownHouseUrls();
+        } else if(getPropertyType().equals("Condo/Co-op")){
+            urls = getCondoUrls();
+        } else{
+            urls = getSingleFamilyUrls();
+        }
+
+        Collections.shuffle(urls);
+        return urls;
+    }
+
+    private List<String> sanitizeUrls() {
+        List<String> sanitizedUrls = new ArrayList<>();
+        for (String url : urls) {
+            if (url.contains("http")) {
+                sanitizedUrls.add(url);
+            } else {
+                sanitizedUrls.add(AWS_IMAGE_ENDPOINT + url);
+            }
+        }
+
+        return sanitizedUrls;
     }
 
     public static List<String> getTownHouseUrls() {
@@ -306,6 +370,18 @@ public class Property {
 
     public void setUrls(List<String> urls){
         this.urls = urls;
+        Collections.shuffle(urls);
+    }
+
+    public String getDisplayUrl() {
+        List<String> urls = getShuffeledClientUrls();
+        if (urls != null && urls.size() > 0 && TextUtils.isEmpty(displayUrl)) {
+            Random random = new Random();
+            int randomIndex = random.nextInt(urls.size());
+            displayUrl =  urls.get(randomIndex);
+        }
+
+        return displayUrl;
     }
 
     private static class Boundary {

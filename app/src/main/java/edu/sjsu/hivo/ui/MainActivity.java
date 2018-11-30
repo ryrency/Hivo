@@ -2,17 +2,18 @@ package edu.sjsu.hivo.ui;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -32,6 +33,7 @@ import com.google.gson.reflect.TypeToken;
 import com.seatgeek.placesautocomplete.DetailsCallback;
 import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
+import com.seatgeek.placesautocomplete.model.AutocompleteResultType;
 import com.seatgeek.placesautocomplete.model.Place;
 import com.seatgeek.placesautocomplete.model.PlaceDetails;
 
@@ -56,26 +58,28 @@ import edu.sjsu.hivo.ui.utility.SortUtility;
 
 public class MainActivity extends AppCompatActivity  {
     String TAG = MainActivity.class.getSimpleName();
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private PropertyListAdapter adapter;
     private List<Property> propertyList;
     private TextView mapTextView;
-    private ImageView mapImageView, enterButton;
+    private ImageView mapImageView;
     private static final int TAG_CODE_PERMISSION_LOCATION = 110;
     private String response="";
     private PlacesAutocompleteTextView userInput;
-    private LaunchActivityInterface launchActivityInterface;
     private String userText,extension;
     private ImageView filterImg,sortImg;
     private TextView filterText,sortText;
-    private Context context;
     private FilterUtility filterUtility;
     private SortUtility sortUtility;
-    private String zipcode="";
+    private Intent filterIntent = null;
+    private Intent sortIntent = null;
     static final int PICK_FILTER_REQUEST = 1;  // The request code
     static final int PICK_SORT_REQUEST = 2;  // The request code
-    static final int MY_PERMISSIONS_REQUEST_INTERNET = 110;
+    static final int MY_PERMISSIONS_REQUEST_LOCATION = 110;
     private FusedLocationProviderClient mFusedLocationClient;
+    private boolean allPropertiesLoaded;
+    private boolean isFetching;
 
 
     @Override
@@ -84,34 +88,40 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         propertyList = new ArrayList<>();
 
-        getXmlReferences();
+        initUI();
         checkPermission();
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            zipcode = launchActivityInterface.getZipcodeFromLocation(location,getApplicationContext());
-                            extension = "/zdata?zipcode="+zipcode;
-                            sendRequestAndprintResponse(extension,0);
+        restoreFromInstance(savedInstanceState);
+        if (propertyList.size() == 0 && TextUtils.isEmpty(extension)) {
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            Log.d(TAG, "found last location");
+                            if (location != null) {
+                                extension = "cordinate?longitude="+String.valueOf(location.getLongitude())+"&latitude="+String.valueOf(location.getLatitude());
+                                sendRequestAndprintResponse(extension,0, true);
+                            }
                         }
-                    }
-                });
+                    });
+        }
 
         userInput.clearFocus();
+        userInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userInput.setText("");
+            }
+        });
         filterUtility = new FilterUtility(this);
-        filterUtility.setFilterListener(filterImg,filterText);
+        filterUtility.setFilterListener(filterImg, filterText);
 
         sortUtility = new SortUtility(this);
         sortUtility.setSortListener(sortImg,sortText);
 
         setAutoPlaceComplete();
-        moveToMapVew();
-
-//        final Bundle savedState = savedInstanceState;
-
+        showMapButtonClickListeners();
 
         adapter = new PropertyListAdapter(propertyList,this);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,
@@ -119,17 +129,12 @@ public class MainActivity extends AppCompatActivity  {
         recyclerView.setLayoutManager(verticalLayoutManager);
         recyclerView.setAdapter(adapter);
 
-        checkSavedInstance(savedInstanceState);
-
-
-        setEnterButtonListener();
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (!recyclerView.canScrollVertically(1)) {
+                if (!recyclerView.canScrollVertically(1) && !allPropertiesLoaded) {
                     Log.d(TAG, "end of list reached in recycler view, may be load more from server.");
-                    sendRequestAndprintResponse(extension,propertyList.size());
+                    sendRequestAndprintResponse(extension, propertyList.size(), false);
                 }
             }
         });
@@ -137,53 +142,75 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
-    private void getXmlReferences(){
+    private void initUI(){
+        swipeRefreshLayout = findViewById(R.id.refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (propertyList == null || propertyList.size() == 0) {
+                    sendRequestAndprintResponse(extension, 0, false);
+                } else {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
         recyclerView = findViewById(R.id.property_details_rv);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         filterImg = findViewById(R.id.list_filter_iv);
         filterText = findViewById(R.id.list_filter_tv);
         sortImg = findViewById(R.id.list_sort_iv);
         sortText = findViewById(R.id.list_sort_tv);
-        enterButton =  findViewById(R.id.enter_button);
         userInput =  findViewById(R.id.enter_location);
         userText = String.valueOf(userInput.getText());
         mapTextView = (TextView) findViewById(R.id.list_map_tv);
         mapImageView = (ImageView) findViewById(R.id.list_map_iv);
-        launchActivityInterface = new LaunchActivityImpl();
-        context = getApplicationContext();
     }
 
+    // TODO(shefali@) Fix handling result in onActivityResult
     private void checkPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED){
             Toast.makeText(this, "NO PERMISSION GRANTED", Toast.LENGTH_LONG).show();
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.INTERNET},
-                    MY_PERMISSIONS_REQUEST_INTERNET);
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_LOCATION);
         }
     }
 
     private void setAutoPlaceComplete(){
+        userInput.setResultType(AutocompleteResultType.GEOCODE);
         userInput.setOnPlaceSelectedListener(
                 new OnPlaceSelectedListener() {
                     @Override
                     public void onPlaceSelected(@NonNull final Place place) {
+                        hideKeyboard(MainActivity.this);
+                        userInput.clearFocus();
                         userInput.getDetailsFor(place, new DetailsCallback() {
                             @Override
                             public void onSuccess(final PlaceDetails details) {
-                                Log.d("test", "details " + details);
-                                Log.d("TEST:", " Details: " + details.address_components.toString());
-                                String address = details.address_components.get(0).short_name+" "+ /*street No*/
-                                        details.address_components.get(1).short_name;/*Adddress Line 1*/
+                                Log.d(TAG, "details " + details);
+                                Log.d(TAG, " Details: " + details.address_components.toString());
+                                Log.d(TAG, details.types.toString());
 
-                                try {
-                                    address = URLEncoder.encode(address, "UTF-8");
-                                } catch (UnsupportedEncodingException e) {
-                                    e.printStackTrace();
+                                if (details.types.contains("street_address") || details.types.contains("premise")) {
+                                    String address = details.address_components.get(0).short_name+" "+ /*street No*/
+                                            details.address_components.get(1).short_name;/*Adddress Line 1*/
+
+                                    try {
+                                        address = URLEncoder.encode(address, "UTF-8");
+                                        // don't update the extension private variable here
+                                        String extension = "/data?str="+address;
+                                        sendRequestAndprintResponse(extension,0, false);
+                                        userInput.clearFocus();
+                                    } catch (UnsupportedEncodingException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    double lat = details.geometry.location.lat;
+                                    double lng = details.geometry.location.lng;
+                                    extension = "cordinate?longitude="+String.valueOf(lng)+"&latitude="+String.valueOf(lat);
+                                    sendRequestAndprintResponse(extension,0, true);
                                 }
-                                extension = "/data?str="+address;
-                                sendRequestAndprintResponse(extension,0);
-                                userInput.clearFocus();
                             }
 
                             @Override
@@ -196,58 +223,24 @@ public class MainActivity extends AppCompatActivity  {
     }
 
 
-    private void moveToMapVew() {
-
+    private void showMapButtonClickListeners() {
         mapImageView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                Context context = v.getContext();
-                Intent intent = new Intent(context, MapActivity.class);
-                context.startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, MapActivity.class);
+                startActivity(intent);
             }
         });
         mapTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, MapActivity.class);
-                context.startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, MapActivity.class);
+                startActivity(intent);
 
             }
         });
-    }
-
-
-    private void setEnterButtonListener(){
-        enterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                response = userInput.getText().toString();
-                userInput.getText().clear();
-                userInput.clearFocus();
-
-                extension = launchActivityInterface.checkResponse(response, zipcode);
-                sendRequestAndprintResponse(extension,0);
-
-            }
-        });
-    }
-
-    private void checkSavedInstance(Bundle savedInstanceState){
-        if (savedInstanceState != null) {
-            MainActivityData data = EventBus.getDefault().getStickyEvent(MainActivityData.class);
-            if (data.getProperties() != null || data==null) {
-                propertyList.addAll(data.getProperties());
-                adapter.notifyDataSetChanged();
-            }
-            else {
-                extension="/zdata?zipcode="+zipcode;
-                sendRequestAndprintResponse(extension,0);
-            }
-        }
-
     }
 
     @Override
@@ -255,65 +248,64 @@ public class MainActivity extends AppCompatActivity  {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case PICK_FILTER_REQUEST:
-                Log.d(TAG,"zipcode = "+zipcode);
                 if (resultCode == FilterActivity.RESULT_OK) {
-                    extension = launchActivityInterface.checkResponse(response,zipcode);
-                    extension = filterUtility.applyFilterData(data, extension);//check if can be done better
-                    sendRequestAndprintResponse(extension,0);
+                    filterIntent = data;
+                    sendRequestAndprintResponse(extension,0, true);
                     break;
 
                 }
             case PICK_SORT_REQUEST:
                 super.onActivityResult(requestCode, resultCode, data);
                 if (resultCode == SortActivity.RESULT_OK) {
-                    extension = launchActivityInterface.checkResponse(response,zipcode);
-                    extension +=  sortUtility.applySortData(data);
-                    sendRequestAndprintResponse(extension,0);
+                    sortIntent = data;
+                    sendRequestAndprintResponse(extension,0, true);
                 }
         }
     }
 
-    public void sendRequestAndprintResponse(final String extension, final int skipCount) {
-        checkPermission();
-        hideKeyboard(this);
-        Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + extension+"&skip=**");
+    public void sendRequestAndprintResponse(String extension, final int skipCount, boolean clearList) {
+        if (isFetching) return;
+        isFetching = true;
+        swipeRefreshLayout.setRefreshing(true);
+
+        extension += "&skip="+skipCount;
+        extension = FilterUtility.applyFilterData(filterIntent, extension);
+        extension = SortUtility.applySortData(sortIntent, extension);
+        final String url = VolleyNetwork.AWS_ENDPOINT + extension;
+        Log.d(TAG, "requesting data from url" + url);
+
+        // if it is a new request, clear old data
+        if (clearList) {
+            allPropertiesLoaded = false;
+            propertyList.clear();
+            adapter.notifyDataSetChanged();
+        }
+
         try {
             JsonArrayRequest request = new JsonArrayRequest(
                     Request.Method.GET,
-                    VolleyNetwork.AWS_ENDPOINT + extension+"&skip="+skipCount,
+                    url,
                     null,
                     new Response.Listener<JSONArray>() {
                         public void onResponse(JSONArray response) {
                             Log.d(TAG, "response is:" + response.toString());
-                            Type listType = new TypeToken<ArrayList<Property>>() {
-                            }.getType();
+                            Type listType = new TypeToken<ArrayList<Property>>() {}.getType();
                             List<Property> list = new Gson().fromJson(response.toString(), listType);
-                            Log.d(TAG, "inside sendRequestAndprintResponse()" + VolleyNetwork.AWS_ENDPOINT + extension+"&skip="+skipCount);
+                            Log.d(TAG, "response from url: " + url);
 
-                             if (list.size() == 1) {
-                                propertyList.clear();
-                                propertyList.addAll(list);
+                             if (list.size() == 1 && skipCount == 0) {
                                 DetailActivityData detailActivityData = new DetailActivityData(propertyList.get(0));
                                 EventBus.getDefault().postSticky(detailActivityData);
-                                Intent intent = new Intent(context, PropertyDetail.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            }
-                            else if (list.size() > 1 && skipCount==0) {
-                                propertyList.clear();
+                                Intent intent = new Intent(MainActivity.this, PropertyDetail.class);
+                                startActivity(intent);
+                            } else if (list.size() > 0) {
                                 propertyList.addAll(list);
                                 adapter.notifyDataSetChanged();
-                                recyclerView.scrollToPosition(0);
+                            } else if (skipCount == 0) {
+                                Toast.makeText(getApplicationContext(), "No properties found, please try a different search.", Toast.LENGTH_LONG).show();
                             }
-                            else if (propertyList.size() > 14) {
-                                propertyList.addAll(list);
-                                adapter.notifyDataSetChanged();
-                            }
-
-                            if (propertyList.size() == 0)
-                                Toast.makeText(getApplicationContext(), "No Properties Found " + propertyList.size(), Toast.LENGTH_LONG).show();
-                            else if (list.size() == 0)
-                                Toast.makeText(getApplicationContext(), "No More Properties Found " + propertyList.size(), Toast.LENGTH_LONG).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                            isFetching = false;
                         }
                     },
                     new Response.ErrorListener() {
@@ -323,7 +315,9 @@ public class MainActivity extends AppCompatActivity  {
                                 if (error != null) Log.e(TAG, "..", error);
                                 return;
                             }
-
+                            swipeRefreshLayout.setRefreshing(false);
+                            isFetching = false;
+                            Toast.makeText(getApplicationContext(), "Request failed, please pull to refresh to try again.", Toast.LENGTH_LONG).show();
                             Log.e(TAG, "error making server request" + error.getMessage());
                         }
                     }
@@ -332,11 +326,10 @@ public class MainActivity extends AppCompatActivity  {
                     10000,
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-//            requestQueue.add(Request);
 
             VolleyNetwork
                     .getInstance(getApplicationContext())
-                    .getRequestQueue(this.getApplicationContext())
+                    .getRequestQueue(getApplicationContext())
                     .add(request);
         } catch (Exception e) {
             e.printStackTrace();
@@ -344,40 +337,28 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
         if (propertyList != null) {
             EventBus.getDefault().postSticky(new MainActivityData(propertyList));
+        }
+
+        bundle.putString("extension", extension);
+        bundle.putParcelable("filters", filterIntent);
+        bundle.putParcelable("sort", sortIntent);
+    }
+
+    private void restoreFromInstance(Bundle bundle){
+        if (bundle != null) {
+            MainActivityData data = EventBus.getDefault().getStickyEvent(MainActivityData.class);
+            if (data.getProperties() != null ) {
+                propertyList.addAll(data.getProperties());
+                EventBus.getDefault().removeStickyEvent(data);
+            }
+
+            extension = bundle.getString("extension");
+            filterIntent = bundle.getParcelable("filters");
+            sortIntent = bundle.getParcelable("sort");
         }
     }
 

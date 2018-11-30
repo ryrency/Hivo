@@ -5,34 +5,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="@color/white">
 
-    <EditText
+    <com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
         android:id="@+id/enter_location"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="4dp"
-        app:layout_constraintWidth_default="wrap"
-        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:hint="Enter Location"
+        android:focusedByDefault="false"
+        android:textCursorDrawable="@drawable/black_cursor"
         android:background="@null"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/divider1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/enter_button"
-        android:singleLine="true"
-
-        />
-
-    <ImageView
-        android:id="@+id/enter_button"
-        android:layout_width="60dp"
-        android:layout_height="50dp"
-        android:layout_marginRight="2dp"
-        android:clickable="true"
-        android:src="@drawable/enter_key"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/divider1"
-        />
+        android:singleLine="true"
+        app:pacv_googleMapsApiKey="AIzaSyCW6UTTXPDezrtFn4FTDaMkhnNtbUMYKxU"/>
+
 
     <View
         android:id="@+id/divider1"
@@ -41,7 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@id/enter_button"/>
+        app:layout_constraintTop_toBottomOf="@id/enter_location"/>
 
 
     <fragment

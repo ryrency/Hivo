@@ -55,6 +55,4 @@ public class PropertyImages extends AppCompatActivity{
         super.onSaveInstanceState(bundle);
         bundle.putInt(POSITION_KEY, viewPager.getCurrentItem());
     }
-
-
 }

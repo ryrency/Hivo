@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+
+import java.util.ArrayList;
 import java.util.List;
 import edu.sjsu.hivo.R;
 import edu.sjsu.hivo.ui.propertydetail.PropertyDetail;
@@ -17,11 +19,23 @@ import edu.sjsu.hivo.ui.propertydetail.PropertyImages;
 
 public class CustomPagerAdapter extends PagerAdapter {
     private Context mContext;
-    private List<String> images;
+    private List<String> images = new ArrayList<>();
 
     public CustomPagerAdapter(Context context, List<String> images){
         mContext=context;
         this.images = images;
+    }
+
+    public CustomPagerAdapter(Context context){
+        mContext=context;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
+    public boolean hasImages() {
+        return images != null && images.size() > 0;
     }
 
     @NonNull
@@ -35,7 +49,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         final ImageView detailIv = layout.findViewById(R.id.detail_images_iv);
         //RequestOptions options = new RequestOptions();
         //options = options.centerCrop();
-        String url = "https://project-realestate.herokuapp.com/property_image?image_url="+images.get(position);
+        String url = images.get(position);
         Glide.with(mContext).load(url).into(detailIv);
 
         final int finalPosition = position;
