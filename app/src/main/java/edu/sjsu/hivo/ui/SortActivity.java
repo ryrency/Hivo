@@ -22,7 +22,8 @@ public class SortActivity extends AppCompatActivity {
 
 
         private String[] sortOptions = {"price","beds","baths","sqft"};
-        int selectedItem = Integer.MIN_VALUE, sortOrder=1;
+        int selectedItem = Integer.MIN_VALUE;
+        String sortOrder="1";
         String sortOptionSelected ="";
 
     ListView lvCheckBox;
@@ -52,11 +53,11 @@ public class SortActivity extends AppCompatActivity {
                 public void onClick(View arg0)
                 {
                     if (btnSortOrder.getText().toString().equals("Low-High")) {
-                        sortOrder = -1;
+                        sortOrder = "-1";
                         btnSortOrder.setText("High-Low");
                     }
                     else{
-                        sortOrder= 1;
+                        sortOrder= "1";
                         btnSortOrder.setText("Low-High");
                     }
                 }

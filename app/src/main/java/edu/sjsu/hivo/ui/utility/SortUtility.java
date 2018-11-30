@@ -48,7 +48,7 @@ public class SortUtility {
         if (data == null || TextUtils.isEmpty(extension)) {
             return extension;
         }
-        extension += "&sortv=" + data.getStringExtra("SORT_OPTION") + "&sort_by=" + 1;
+        extension += "&sortv=" + data.getStringExtra("SORT_OPTION") + "&sort_by=" + data.getStringExtra("SORT_ORDER");;
         return extension;
 
     }
