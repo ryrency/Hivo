@@ -81,38 +81,4 @@ public class FilterUtility {
         return extension;
 
     }
-
-    public String applyFilterData(Intent data) {
-        String maxPrice, minPrice, maxSqft, minSqft, noOfBeds, noOfBaths,filterExtension="";
-        maxPrice = data.getStringExtra("MAX_PRICE");
-        if (!maxPrice.equals("")) {
-            filterExtension += "&max_price=" + maxPrice;
-        }
-        minPrice = data.getStringExtra("MIN_PRICE");
-        if (!minPrice.equals("")) {
-            filterExtension += "&min_price=" + minPrice;
-        }
-        maxSqft = data.getStringExtra("MAX_SQFT");
-        if (!maxSqft.equals("")) {
-            filterExtension += "&max_sqft=" + maxSqft;
-        }
-        minSqft = data.getStringExtra("MIN_SQFT");
-        if (!minSqft.equals("")) {
-            filterExtension += "&min_sqft=" + minSqft;
-        }
-        noOfBeds = data.getStringExtra("NO_OF_BEDS");
-        if (!noOfBeds.equals("0")) {
-            Log.d("TEST", "noOfBeds " + noOfBeds);
-            filterExtension += "&beds=" + noOfBeds + "&beds_op=eq";
-        }
-        noOfBaths = data.getStringExtra("NO_OF_BATHS");
-        if (!noOfBaths.equals("0.0")) {
-            Log.d("TEST", "noOfBaths " + noOfBaths);
-            filterExtension += "&baths=" + noOfBaths + "&baths_op=eq";
-        }
-
-        Log.d("TEST", "Extension" + filterExtension);
-        Log.i("**TAG*************", maxPrice + " " + minPrice + " " + maxSqft + " " + minSqft + " " + noOfBeds + " " + noOfBaths);
-        return filterExtension;
-    }
 }

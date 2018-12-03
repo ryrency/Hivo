@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity  {
                     });
         }
 
+        userInput.getText().clear();
         userInput.clearFocus();
         userInput.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,6 +186,7 @@ public class MainActivity extends AppCompatActivity  {
                     public void onPlaceSelected(@NonNull final Place place) {
                         hideKeyboard(MainActivity.this);
                         userInput.clearFocus();
+                        userInput.getText().clear();
                         userInput.getDetailsFor(place, new DetailsCallback() {
                             @Override
                             public void onSuccess(final PlaceDetails details) {
@@ -271,7 +273,7 @@ public class MainActivity extends AppCompatActivity  {
         extension += "&skip="+skipCount;
         extension = FilterUtility.applyFilterData(filterIntent, extension);
         extension = SortUtility.applySortData(sortIntent, extension);
-        final String url = VolleyNetwork.AWS_ENDPOINT + extension;
+        String url = VolleyNetwork.AWS_ENDPOINT + extension;
         Log.d(TAG, "requesting data from url" + url);
 
         // if it is a new request, clear old data
@@ -291,10 +293,10 @@ public class MainActivity extends AppCompatActivity  {
                             Log.d(TAG, "response is:" + response.toString());
                             Type listType = new TypeToken<ArrayList<Property>>() {}.getType();
                             List<Property> list = new Gson().fromJson(response.toString(), listType);
-                            Log.d(TAG, "response from url: " + url);
+                            //Log.d(TAG, "response from url: " + url);
 
                              if (list.size() == 1 && skipCount == 0) {
-                                DetailActivityData detailActivityData = new DetailActivityData(propertyList.get(0));
+                                DetailActivityData detailActivityData = new DetailActivityData(list.get(0));
                                 EventBus.getDefault().postSticky(detailActivityData);
                                 Intent intent = new Intent(MainActivity.this, PropertyDetail.class);
                                 startActivity(intent);

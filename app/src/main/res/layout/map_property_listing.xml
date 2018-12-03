@@ -73,28 +73,28 @@
         app:layout_constraintTop_toTopOf="@id/list_map_iv"
         app:layout_constraintLeft_toRightOf="@+id/list_map_iv"/>
 
-    <ImageView
-        android:id="@+id/list_sort_iv"
-        android:layout_width="45dp"
-        android:layout_height="48dp"
-        android:src="@drawable/sort"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/list_sort_tv" />
+    <!--<ImageView-->
+        <!--android:id="@+id/list_sort_iv"-->
+        <!--android:layout_width="45dp"-->
+        <!--android:layout_height="48dp"-->
+        <!--android:src="@drawable/sort"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/list_sort_tv" />-->
 
-    <TextView
-        android:id="@+id/list_sort_tv"
-        android:layout_width="36dp"
-        android:layout_height="37dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="64dp"
-        android:gravity="center"
-        android:text="Sort"
-        android:textSize="16dp"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/list_filter_iv"
-        app:layout_constraintTop_toTopOf="@+id/list_sort_iv"
-        app:layout_constraintVertical_bias="1.0" />
+    <!--<TextView-->
+        <!--android:id="@+id/list_sort_tv"-->
+        <!--android:layout_width="36dp"-->
+        <!--android:layout_height="37dp"-->
+        <!--android:layout_marginEnd="64dp"-->
+        <!--android:layout_marginTop="4dp"-->
+        <!--android:layout_marginRight="64dp"-->
+        <!--android:gravity="center"-->
+        <!--android:text="Sort"-->
+        <!--android:textSize="16dp"-->
+        <!--android:textAlignment="center"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/list_filter_iv"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/list_sort_iv"-->
+        <!--app:layout_constraintVertical_bias="1.0" />-->
 
     <ImageView
         android:id="@+id/list_filter_iv"

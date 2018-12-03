@@ -112,14 +112,14 @@ public class MapActivity extends AppCompatActivity implements
         filterImg = (ImageView)findViewById(R.id.list_filter_iv);
         filterText = (TextView)findViewById(R.id.list_filter_tv);
 
-        sortImg = findViewById(R.id.list_sort_iv);
-        sortText = findViewById(R.id.list_sort_tv);
+        //sortImg = findViewById(R.id.list_sort_iv);
+        //sortText = findViewById(R.id.list_sort_tv);
 
         filterUtility = new FilterUtility(this);
         filterUtility.setFilterListener(filterImg, filterText);
 
-        sortUtility = new SortUtility(this);
-        sortUtility.setSortListener(sortImg, sortText);
+        //sortUtility = new SortUtility(this);
+        //sortUtility.setSortListener(sortImg, sortText);
 
         setShowListViewClickListener();
         iconGen = new IconGenerator(this);
@@ -158,6 +158,7 @@ public class MapActivity extends AppCompatActivity implements
                     public void onPlaceSelected(@NonNull final Place place) {
                         MainActivity.hideKeyboard(MapActivity.this);
                         userInput.clearFocus();
+                        userInput.getText().clear();
                         userInput.getDetailsFor(place, new DetailsCallback() {
                             @Override
                             public void onSuccess(final PlaceDetails details) {
@@ -299,7 +300,7 @@ public class MapActivity extends AppCompatActivity implements
     public void sendRequestAndprintResponse(String extension) {
         extension += "&skip=0";
         extension = FilterUtility.applyFilterData(filterIntent, extension);
-        extension = SortUtility.applySortData(sortIntent, extension);
+        //extension = SortUtility.applySortData(sortIntent, extension);
         final String url = VolleyNetwork.AWS_ENDPOINT + extension;
         Log.d(TAG, "fetching data from url:  " + url);
 
@@ -365,12 +366,12 @@ public class MapActivity extends AppCompatActivity implements
                     break;
 
                 }
-            case PICK_SORT_REQUEST:
-                super.onActivityResult(requestCode, resultCode, data);
-                if (resultCode == SortActivity.RESULT_OK) {
-                    sortIntent = data;
-                    onCameraIdle();
-                }
+//            case PICK_SORT_REQUEST:
+//                super.onActivityResult(requestCode, resultCode, data);
+//                if (resultCode == SortActivity.RESULT_OK) {
+//                    sortIntent = data;
+//                    onCameraIdle();
+//                }
         }
     }
 
@@ -439,7 +440,7 @@ public class MapActivity extends AppCompatActivity implements
         bundle.putDouble("lat", currentLocation.latitude);
         bundle.putDouble("lng", currentLocation.longitude);
         bundle.putParcelable("filters", filterIntent);
-        bundle.putParcelable("sort", sortIntent);
+        //bundle.putParcelable("sort", sortIntent);
     }
 
     private void restoreFromBundle(Bundle bundle) {
@@ -448,7 +449,7 @@ public class MapActivity extends AppCompatActivity implements
             double lng = bundle.getDouble("lng");
             currentLocation = new LatLng(lat, lng);
             filterIntent = bundle.getParcelable("filters");
-            sortIntent = bundle.getParcelable("sort");
+           // sortIntent = bundle.getParcelable("sort");
         }
     }
 }
