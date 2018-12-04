@@ -225,7 +225,7 @@ public class MapActivity extends AppCompatActivity implements
 
 
     protected Marker createMarker(double latitude, double longitude, String price, String address, String saleType) {
-        if(saleType.equals("Sold")) {
+        if(saleType.equals("PAST SALE")) {
             iconGen.setStyle(IconGenerator.STYLE_RED);
         }
         else {
