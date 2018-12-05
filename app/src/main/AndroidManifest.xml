@@ -74,7 +74,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.sjsu.hivo.ui.MainActivity" />
         </activity>
-        <activity android:name=".ui.SortActivity"></activity>
+        <activity android:name=".ui.SortActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
     </application>
 
 </manifest>
